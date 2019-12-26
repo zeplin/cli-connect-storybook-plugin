@@ -1,0 +1,63 @@
+{
+  "name": "@zeplin/cli-connect-storybook-plugin",
+  "version": "0.1.1",
+  "description": "Zeplin CLI Connected Components - Storybook Plugin",
+  "main": "./dist/index",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "build:clean": "rm -rf dist/ && npm run build",
+    "lint": "eslint --ext .js,.ts .",
+    "prepare": "npm run build:clean"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src",
+      "<rootDir>/test"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeplin/cli-connect-storybook-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zeplin/cli-connect-storybook-plugin/issues"
+  },
+  "homepage": "https://github.com/zeplin/cli-connect-storybook-plugin#readme",
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/jsdom": "^12.2.4",
+    "@types/node": "^12.7.5",
+    "@types/url-join": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^2.3.0",
+    "@typescript-eslint/parser": "^2.3.0",
+    "@zeplin/cli": "^0.3.0",
+    "@zeplin/eslint-config": "^2.2.0",
+    "copyfiles": "^2.1.1",
+    "eslint": "^6.4.0",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "prop-types": "^15.7.2",
+    "ts-jest": "^23.10.0",
+    "typescript": "^3.6.2"
+  },
+  "dependencies": {
+    "cross-spawn": "^7.0.1",
+    "https": "^1.0.0",
+    "jsdom": "^15.2.1",
+    "node-fetch": "^2.6.0",
+    "path": "^0.12.7",
+    "ts-dedent": "^1.1.0",
+    "url-join": "^4.0.1"
+  }
+}
