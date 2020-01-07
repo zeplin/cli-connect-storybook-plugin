@@ -1,6 +1,6 @@
 # Zeplin CLI Storybook Plugin
 
-[Zeplin CLI](https://github.com/zeplin/cli) plugin to generate Storybook links for Zeplin components. The implementation is inspired by [chromatic-cli](https://github.com/chromaui/chromatic-cli).
+[Zeplin CLI](https://github.com/zeplin/cli) plugin to generate Storybook links for Zeplin components, inspired by [chromatic-cli](https://github.com/chromaui/chromatic-cli).
 
 ## Installation
 
@@ -12,80 +12,82 @@ npm install -g @zeplin/cli-connect-storybook-plugin
 
 ## Usage
 
-The plugin requires a running Storybook server to retrieve information about the stories, configure the plugin in your components configuration file.
+Since Zeplin CLI Storybook Plugin requires a running Storybook instance to collect information about stories, configure the plugin in your components configuration file (`.zeplin/components.json`) to point to an instance.
 
-There are 3 alternative ways to connect with Storybook:
+### Remote Storybook instance
 
-- Load the stories from a working remote Storybook server.
+Provide the URL of a remote Storybook instance.
 
-    .zeplin/components.json
-    ```json
-    {
-        ...
-        "plugins" : [{
-            "name": "@zeplin/cli-connect-storybook-plugin",
-            "config": {
-                "url": "<protocol>://<hostname>:<port>",
-            }
-        }],
-        ...
-    }
-    ```
+```json
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "<protocol>://<hostname>:<port>",
+        }
+    }],
+    ...
+}
+```
 
-- Start a local Storybook server using a npm script on your package.json
+### Local Storybook instance
 
-    .zeplin/components.json
-    ```json
-    {
-        ...
-        "plugins" : [{
-            "name": "@zeplin/cli-connect-storybook-plugin",
-            "config": {
-                "url": "http://localhost:<port>",
-                "startScript": "<name of the npm script>",
-            }
-        }],
-        ...
-    }
-    ```
+Zeplin CLI Storybook Plugin can also start a local Storybook instance to collect information about stories. You can either provide an npm script or a custom command to start a Storybook instance.
 
-- Start a local Storybook server using a custom command
+#### npm script
 
-    .zeplin/components.json
-    ```json
-    {
-        ...
-        "plugins" : [{
-            "name": "@zeplin/cli-connect-storybook-plugin",
-            "config": {
-                "url": "http://localhost:<port>",
-                "command": "<the command to start storybook server>",
-            }
-        }],
-        ...
-    }
-    ```
-**All scenarios will create Storybook links by using `url` parameter as a base URL.**
+Provide the name of the npm script to start a Storybook instance.
 
-Run CLI `connect` command using the plugin.
+```json
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "http://localhost:<port>",
+            "startScript": "<name of the npm script>",
+        }
+    }],
+    ...
+}
+```
+
+#### Custom command
+
+Provide a custom command to run to start a Storybook instance.
+
+```json
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "http://localhost:<port>",
+            "command": "<the command to start storybook server>",
+        }
+    }],
+    ...
+}
+```
+
+☝️ _For all alternatives, the URL in Zeplin will be based on the `url` property you define._
+
+Once the Storybook instance is configured, run CLI `connect` command.
 
 ```sh
 zeplin connect
 ```
 
-### Automatic matching
+## Matching components with stories
 
-The following rules applies to automatically match components with stories.
+Zeplin CLI Storybook Plugin automatically attempts to match components with stories following these rules:
 
-- If the framework is React, the plugin will resolve component stories by matching file path given in the components configuration file.
-- If `component` field of stories are set (either using CSF or storiesOf API), plugin will resolve component stories by matching `component` name of the stories with component file names (e.g. `Avatar.jsx` is `Avatar`).
-- If none of the above works, the plugin will resolve stories by matching story display names (e.g. `Design System/Avatar` is `Avatar`) with component file names (e.g. `Avatar.jsx` is `Avatar`).
+- For React, resolve component stories by matching the file path in the components configuration file.
+- If `component` property of stories are set (either using CSF or `storiesOf` API), resolve component stories by matching `component` property of the stories with component file names, e.g. `Avatar.jsx` and `Avatar`.
+- Resolve stories by matching story display names (e.g. `Design System/Avatar` and `Avatar`) with component file names (e.g. `Avatar.jsx` and `Avatar`).
 
-If any match is found, links are created for each story name that the matching story has.
-
-### Manual matching
-
-If automatic matching does not work for you, you can manually create links using components configuration file. Set `storybook` field for each component you want to connect.
+It's also possible to match components with stories manually. Set the `storybook` property components (within the configuration file, `.zeplin/components.json`) for each component you want to manually match and provide the story kind and name(s).
 
 ```json
 {
