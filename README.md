@@ -1,20 +1,23 @@
-# Zeplin CLI Connected Components - Storybook Plugin
+# Zeplin CLI Storybook Plugin
 
-This plugin generates links to connect Zeplin components with  Storybook. The plugin requires a running Storybook server to retrieve information about the stories. The implementation is inspired by [chromatic-cli](https://github.com/chromaui/chromatic-cli).
+[Zeplin CLI](https://github.com/zeplin/cli) plugin to generate Storybook links for Zeplin components, inspired by [chromatic-cli](https://github.com/chromaui/chromatic-cli).
+
+## Installation
+
+Install the plugin using npm.
+
+```sh
+npm install -g @zeplin/cli-connect-storybook-plugin
+```
 
 ## Usage
 
-Install this package along with @zeplin/cli npm package
+Since Zeplin CLI Storybook Plugin requires a running Storybook instance to collect information about stories, configure the plugin in your components configuration file (`.zeplin/components.json`) to point to an instance.
 
-```
-npm install -g @zeplin/cli @zeplin/cli-connect-storybook-plugin
-```
+### Remote Storybook instance
 
-Add the plugin configuratin into your components configuration file. There are 3 alternative ways to connect with Storybook:
+Provide the URL of a remote Storybook instance.
 
-### Load the stories from a working remote Storybook server
-
-.zeplin/components.json
 ```json
 {
     ...
@@ -28,9 +31,14 @@ Add the plugin configuratin into your components configuration file. There are 3
 }
 ```
 
-### Start a local Storybook server using a npm script on your package.json
+### Local Storybook instance
 
-.zeplin/components.json
+Zeplin CLI Storybook Plugin can also start a local Storybook instance to collect information about stories. You can either provide an npm script or a custom command to start a Storybook instance.
+
+#### npm script
+
+Provide the name of the npm script to start a Storybook instance.
+
 ```json
 {
     ...
@@ -45,9 +53,10 @@ Add the plugin configuratin into your components configuration file. There are 3
 }
 ```
 
-### Start a local Storybook server using a custom command
+#### Custom command
 
-.zeplin/components.json
+Provide a custom command to run to start a Storybook instance.
+
 ```json
 {
     ...
@@ -62,25 +71,27 @@ Add the plugin configuratin into your components configuration file. There are 3
 }
 ```
 
-**All scenarios will create Storybook links by using `url` parameter.**
+☝️ _For all alternatives, the URL in Zeplin will be based on the `url` property you define._
 
-## Connecting components with stories
+Once the Storybook instance is configured, run CLI `connect` command.
 
-### Automatic matching
+```sh
+zeplin connect
+```
 
-The following rules applies to match components with stories.
+## Matching components with stories
 
-- If the framework is React, Storybook contains the file path information of the component. the plugin will try to find the story with the same file path given in components config files.
-- If stories has their `component` field set (either using CSF or storiesOf API), plugin will try to find the story by comparing `component` name on the story with the file name (without extension) of the code component.
-- Or else, the plugin will just try to find a story with a display name matching with the file name (without extension) of the code component.
+Zeplin CLI Storybook Plugin automatically attempts to match components with stories following these rules:
 
-If any match is found, links are created for each story name that the matching story has.
+- For React, resolve component stories by matching the file path in the components configuration file.
+- If `component` property of stories are set (either using CSF or `storiesOf` API), resolve component stories by matching `component` property of the stories with component file names, e.g. `Avatar.jsx` and `Avatar`.
+- Resolve stories by matching story display names (e.g. `Design System/Avatar` and `Avatar`) with component file names (e.g. `Avatar.jsx` and `Avatar`).
 
-### Manual matching
-
-If automatic matching does not work for you, you can manually create links using components configuration file. Set `storybook` field for each component you want to connect.
+It's also possible to match components with stories manually. Set the `storybook` property components (within the configuration file, `.zeplin/components.json`) for each component you want to manually match and provide the story kind and name(s).
 
 ```json
+{
+    ...
     "components": [
         {
             "path": "Avatar.jsx",
@@ -98,4 +109,12 @@ If automatic matching does not work for you, you can manually create links using
             }
         }
     ]
+    ...
+}
 ```
+
+## About Connected Components
+
+[Connected Components](https://blog.zeplin.io/introducing-connected-components-components-in-design-and-code-in-harmony-aa894ed5bd95) in Zeplin lets you access components in your codebase directly on designs in Zeplin, with links to Storybook, GitHub and any other source of documentation based on your workflow. 🧩
+
+[Zeplin CLI](https://github.com/zeplin/cli) uses plugins like this one to analyze component source code and publishes a high-level overview to be displayed in Zeplin.
