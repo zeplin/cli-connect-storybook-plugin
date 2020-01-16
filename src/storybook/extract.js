@@ -1,3 +1,5 @@
+// Original file: https://github.com/chromaui/chromatic-cli/blob/6ed2142/bin/storybook/extract.js
+
 function specFromStory({ id, kind, name, parameters: { component, framework } = {} }, componentPathMap) {
   return {
     storyId: id,
@@ -18,7 +20,7 @@ export const extract = global => {
 
   if (!__STORYBOOK_CLIENT_API__) {
     throw new Error(
-      `Chromatic requires Storybook version at least 3.4. Please update your Storybook!`
+      `Zeplin CLI requires Storybook version at least 3.4. Please update your Storybook!`
     );
   }
 

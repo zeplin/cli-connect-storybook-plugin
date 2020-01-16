@@ -1,10 +1,12 @@
+// Original file: https://github.com/chromaui/chromatic-cli/blob/a5cb862/bin/storybook/start-app.js
+
 import { spawn } from 'cross-spawn';
 import https from 'https';
 import fetch from 'node-fetch';
 import path from 'path';
 
-const CHROMATIC_POLL_INTERVAL = 1000,
-const CHROMATIC_TIMEOUT = 5 * 60 * 1000,
+const POLL_INTERVAL = 1000,
+const TIMEOUT = 5 * 60 * 1000,
 
 const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
@@ -18,14 +20,14 @@ export async function checkResponse(url) {
 }
 
 async function waitForResponse(child, url) {
-  const timeoutAt = Date.now() + CHROMATIC_TIMEOUT;
+  const timeoutAt = Date.now() + TIMEOUT;
   return new Promise((resolve, reject) => {
     let resolved = false;
     async function check() {
       if (Date.now() > timeoutAt) {
         resolved = true;
         reject(
-          new Error(`No server responding at ${url} within ${CHROMATIC_TIMEOUT / 1000} seconds.`)
+          new Error(`No server responding at ${url} within ${TIMEOUT / 1000} seconds.`)
         );
         return;
       }
@@ -35,7 +37,7 @@ async function waitForResponse(child, url) {
         resolve();
         return;
       }
-      setTimeout(check, CHROMATIC_POLL_INTERVAL);
+      setTimeout(check, POLL_INTERVAL);
     }
     check();
 
@@ -57,7 +59,7 @@ async function waitForResponse(child, url) {
   });
 }
 
-export default async function startApp({ scriptName, commandName, args, url, inheritStdio }) {
+export async function startApp({ scriptName, commandName, args, url, inheritStdio }) {
   const env = {
     ...process.env,
     NODE_ENV: 'development',

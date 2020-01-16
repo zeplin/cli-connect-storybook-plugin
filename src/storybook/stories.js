@@ -1,9 +1,11 @@
+// Original file: https://github.com/chromaui/chromatic-cli/blob/7d3a6ee/bin/tester/runtimes.js
+
 /* eslint-disable no-useless-catch, no-console, no-underscore-dangle */
 import { JSDOM, VirtualConsole, ResourceLoader } from 'jsdom';
 import dedent from 'ts-dedent';
 import { extract } from './extract';
 
-import { addShimsToJSDOM } from '../jsdom/jsdom-shims';
+import { addShimsToJSDOM } from './jsdom-shims';
 
 const separator = '=========================';
 
@@ -27,10 +29,10 @@ export async function loadStoriesFromURL(url, { verbose = false } = {}) {
   }
 
   const resourceLoader = new ResourceLoader({
-    userAgent: 'Chromatic',
+    userAgent: "Zeplin CLI"
   });
   const dom = await JSDOM.fromURL(url, {
-    userAgent: 'Chromatic',
+    userAgent: "Zeplin CLI",
     runScripts: 'dangerously', // We need to execute the scripts on the page
     virtualConsole,
     resources: resourceLoader,
