@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-function, max-classes-per-file, no-param-reassign */
+// Original file: https://github.com/chromaui/chromatic-cli/blob/d2155c2/bin/lib/jsdom-shims.js
 
 // Add canvas mock based on this comment: https://github.com/jsdom/jsdom/issues/1782#issuecomment-337656878
 function mockCanvas(window) {

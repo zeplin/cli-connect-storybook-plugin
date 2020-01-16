@@ -5,7 +5,7 @@ import { dedent } from "ts-dedent";
 import path from "path";
 import urljoin from "url-join";
 import { loadStoriesFromURL, Story } from "./storybook/stories";
-import { checkResponse, startApp } from "./storybook/start-app";
+import { startApp, checkResponse } from "./storybook/start-app";
 
 const IFRAME_PATH = "iframe.html";
 
