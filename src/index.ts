@@ -58,7 +58,7 @@ export default class implements ConnectPlugin {
 
                 this.stories = await loadStoriesFromURL(sourceUrl);
 
-                sbProcess.kill();
+                sbProcess?.kill();
             }
         }
 
