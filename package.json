@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "cross-spawn": "^7.0.1",
+    "eventsourcemock": "^2.0.0",
     "https": "^1.0.0",
     "jsdom": "^15.2.1",
     "node-fetch": "^2.6.0",

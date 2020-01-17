@@ -1,5 +1,7 @@
 // Original file: https://github.com/chromaui/chromatic-cli/blob/d2155c2/bin/lib/jsdom-shims.js
 
+import EventSource from 'eventsourcemock';
+
 // Add canvas mock based on this comment: https://github.com/jsdom/jsdom/issues/1782#issuecomment-337656878
 function mockCanvas(window) {
     window.HTMLCanvasElement.prototype.getContext = () => ({
@@ -326,6 +328,11 @@ export function addShimsToJSDOM(window) {
                 }),
         },
         writable: false,
+    });
+
+    Object.defineProperty(window, "EventSource", {
+        value:  EventSource,
+        writable: false
     });
 
     mockCanvas(window);
