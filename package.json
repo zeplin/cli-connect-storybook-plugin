@@ -49,7 +49,7 @@
     "jest": "^24.9.0",
     "prop-types": "^15.7.2",
     "ts-jest": "^23.10.0",
-    "typescript": "^3.6.2"
+    "typescript": "^3.7.3"
   },
   "dependencies": {
     "cross-spawn": "^7.0.1",
