@@ -81,7 +81,7 @@ export async function startApp({ scriptName, commandName, args, url, inheritStdi
     // Run either:
     //   npm/yarn run scriptName (depending on npm_execpath)
     //   node path/to/npm.js run scriptName (if npm run via node)
-    child = spawn(execPath, [...(npmPathIsJs ? [npmPath] : []), 'run', scriptName, ...args], {
+    child = spawn(execPath, [...(npmPathIsJs ? [npmPath] : []), 'run', scriptName, "--", ...args], {
       env,
       cwd: process.cwd(),
       ...(inheritStdio && { stdio: 'inherit' }),
