@@ -39,10 +39,13 @@ export async function loadStoriesFromURL(url) {
   });
 
   await new Promise((resolve, reject) => {
-    dom.window.addEventListener('DOMContentLoaded', () => resolve());
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       reject(new Error('ContentLoadEvent timed out'));
     }, 60000);
+    dom.window.addEventListener('DOMContentLoaded', () => {
+      clearTimeout(timeoutId);
+      resolve();
+    });
   });
 
   // If the app logged something to console.error, it's probably, but not definitely an issue.
