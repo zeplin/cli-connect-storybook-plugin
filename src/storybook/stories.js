@@ -9,7 +9,7 @@ import { addShimsToJSDOM } from './jsdom-shims';
 
 const separator = '=========================';
 
-export async function loadStoriesFromURL(url, { verbose = false } = {}) {
+export async function loadStoriesFromURL(url) {
   const warnings = [];
   const errors = [];
   const virtualConsole = new VirtualConsole();
@@ -23,10 +23,6 @@ export async function loadStoriesFromURL(url, { verbose = false } = {}) {
   virtualConsole.on('jsdomError', l => {
     errors.push(l);
   });
-
-  if (verbose) {
-    virtualConsole.sendTo(log);
-  }
 
   const resourceLoader = new ResourceLoader({
     userAgent: "Zeplin CLI"
