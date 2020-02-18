@@ -7,4 +7,4 @@ export interface Story {
   filePath: string;
 }
 
-export function loadStoriesFromURL(url: string, { verbose }?: { verbose: boolean }): Promise<Story[]>;
+export function loadStoriesFromURL(url: string): Promise<Story[]>;
