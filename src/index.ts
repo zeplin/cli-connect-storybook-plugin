@@ -3,7 +3,7 @@ import {
 } from "@zeplin/cli";
 import { dedent } from "ts-dedent";
 import path from "path";
-import urljoin from "url-join";
+import urlJoin from "proper-url-join";
 import { loadStoriesFromURL, Story } from "./storybook/stories";
 import { startApp, checkResponse } from "./storybook/start-app";
 
@@ -19,6 +19,9 @@ const checkStorybook = async (url: string, { errorMessage }: { errorMessage: str
     console.log(`Detected Storybook at ${url}`);
 };
 
+const join = (p1: string, p2: string): string =>
+    urlJoin(p1, p2, { trailingSlash: true, queryOptions: { encode: false } });
+
 export default class implements ConnectPlugin {
     stories: Story[] = [];
     storybookVersion?: string;
@@ -33,7 +36,7 @@ export default class implements ConnectPlugin {
             const startScript = pluginContext.config?.startScript as string;
             const command = pluginContext.config?.command as string;
 
-            const sourceUrl = url.endsWith(IFRAME_PATH) ? url : urljoin(url, IFRAME_PATH);
+            const sourceUrl = url.endsWith(IFRAME_PATH) ? url : urlJoin(url, IFRAME_PATH);
 
             this.targetUrl = url.endsWith(IFRAME_PATH)
                 ? url.substring(0, url.lastIndexOf(IFRAME_PATH))
@@ -86,14 +89,12 @@ export default class implements ConnectPlugin {
             });
 
             if (matchedStory) {
-                const { storyId, kind, name } = matchedStory;
-                links.push(this.createLink({ storyId, kind, name }));
+                links.push(this.createLink(matchedStory));
             }
         }
 
-        const sbManualConf = componentConfig.storybook;
-        if (sbManualConf && sbManualConf.kind) {
-            const { kind, stories } = sbManualConf;
+        const { kind, stories } = componentConfig.storybook || {};
+        if (kind) {
             if (stories && stories.length > 0) {
                 stories.forEach(name => {
                     links.push(this.createLink({ kind, name }));
@@ -113,20 +114,18 @@ export default class implements ConnectPlugin {
         return this.stories.length > 0;
     }
 
-    private createLink(params: { storyId?: string; kind: string; name?: string }): Link {
-        const { storyId, kind, name } = params;
-
+    private createLink({ storyId, kind, name }: { storyId?: string; kind: string; name?: string }): Link {
         let url: string;
+        const encodedKind = encodeURIComponent(kind);
         if (storyId) {
-            url = urljoin(this.targetUrl, `?path=/story/${storyId}`);
+            url = join(this.targetUrl, `/?path=/story/${storyId}`);
+        } else if (name) {
+            url = join(
+                this.targetUrl,
+                `/?selectedKind=${encodedKind}&selectedStory=${encodeURIComponent(name)}`
+            );
         } else {
-            const encodedKind = encodeURIComponent(kind);
-
-            if (name) {
-                url = urljoin(this.targetUrl, `?selectedKind=${encodedKind}&selectedStory=${encodeURIComponent(name)}`);
-            } else {
-                url = urljoin(this.targetUrl, `?selectedKind=${encodedKind}`);
-            }
+            url = join(this.targetUrl, `/?selectedKind=${encodedKind}`);
         }
 
         return { type: LinkType.storybook, url };
