@@ -86,18 +86,20 @@ export default class implements ConnectPlugin {
             });
 
             if (matchedStory) {
-                links.push(this.createLink(matchedStory.kind, matchedStory.name));
+                const { storyId, kind, name } = matchedStory;
+                links.push(this.createLink({ storyId, kind, name }));
             }
         }
 
         const sbManualConf = componentConfig.storybook;
         if (sbManualConf && sbManualConf.kind) {
-            if (sbManualConf.stories && sbManualConf.stories.length > 0) {
-                sbManualConf.stories.forEach(s => {
-                    links.push(this.createLink(sbManualConf.kind, s));
+            const { kind, stories } = sbManualConf;
+            if (stories && stories.length > 0) {
+                stories.forEach(name => {
+                    links.push(this.createLink({ kind, name }));
                 });
             } else {
-                links.push(this.createLink(sbManualConf.kind));
+                links.push(this.createLink({ kind }));
             }
         }
         return Promise.resolve({ links });
@@ -111,17 +113,22 @@ export default class implements ConnectPlugin {
         return this.stories.length > 0;
     }
 
-    private createLink(kind: string, name?: string): Link {
-        const urlEncodedKind = encodeURIComponent(kind);
+    private createLink(params: { storyId?: string; kind: string; name?: string }): Link {
+        const { storyId, kind, name } = params;
 
-        let preparedUrl;
-        if (name) {
-            const urlEncodedName = encodeURIComponent(name);
-            preparedUrl = urljoin(this.targetUrl, `?selectedKind=${urlEncodedKind}&selectedStory=${urlEncodedName}`);
+        let url: string;
+        if (storyId) {
+            url = urljoin(this.targetUrl, `?path=/story/${storyId}`);
         } else {
-            preparedUrl = urljoin(this.targetUrl, `?selectedKind=${urlEncodedKind}`);
+            const encodedKind = encodeURIComponent(kind);
+
+            if (name) {
+                url = urljoin(this.targetUrl, `?selectedKind=${encodedKind}&selectedStory=${encodeURIComponent(name)}`);
+            } else {
+                url = urljoin(this.targetUrl, `?selectedKind=${encodedKind}`);
+            }
         }
 
-        return { type: LinkType.storybook, url: preparedUrl };
+        return { type: LinkType.storybook, url };
     }
 }
