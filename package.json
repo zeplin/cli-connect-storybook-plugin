@@ -1,6 +1,6 @@
 {
   "name": "@zeplin/cli-connect-storybook-plugin",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Zeplin CLI Connected Components - Storybook Plugin",
   "main": "./dist/index",
   "scripts": {
@@ -39,7 +39,6 @@
     "@types/node": "^12.7.5",
     "@types/node-fetch": "^2.5.4",
     "@types/proper-url-join": "^2.0.0",
-    "@types/url-join": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
     "@zeplin/cli": "^0.3.0",
@@ -60,7 +59,7 @@
     "jsdom": "^15.2.1",
     "node-fetch": "^2.6.0",
     "path": "^0.12.7",
-    "ts-dedent": "^1.1.0",
-    "proper-url-join": "^2.1.1"
+    "proper-url-join": "^2.1.1",
+    "ts-dedent": "^1.1.0"
   }
 }
