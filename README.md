@@ -89,6 +89,8 @@ Zeplin CLI Storybook Plugin automatically attempts to match components with stor
 
 It's also possible to match components with stories manually. Set the `storybook` property components (within the configuration file, `.zeplin/components.json`) for each component you want to manually match and provide the story kind and name(s).
 
+If your story names contain spaces, you'll need to encore that space with the `%20` symbol.
+
 ```json
 {
     ...
@@ -102,6 +104,7 @@ It's also possible to match components with stories manually. Set the `storybook
             "storybook": {
                 "kind": "Design System/Avatar",
                 "stories": [
+                    "very%20large",
                     "large",
                     "medium",
                     "small"
