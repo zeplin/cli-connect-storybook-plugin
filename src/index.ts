@@ -81,7 +81,7 @@ export default class implements ConnectPlugin {
 
                 const componentFileName = path.basename(componentConfig.path, path.extname(componentConfig.path));
 
-                return componentConfig.path === filePath ||
+                return path.relative(".", componentConfig.path) === path.relative(".", filePath) ||
                     componentName === componentFileName ||
                     storyDisplayName === componentFileName;
             });
