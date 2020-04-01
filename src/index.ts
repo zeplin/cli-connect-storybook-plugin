@@ -6,6 +6,7 @@ import path from "path";
 import urlJoin from "proper-url-join";
 import { loadStoriesFromURL, Story } from "./storybook/stories";
 import { startApp, checkResponse } from "./storybook/start-app";
+import { createStorybookUrl, StorybookLinkParams } from "./util/create-url";
 
 const IFRAME_PATH = "iframe.html";
 
@@ -18,9 +19,6 @@ const checkStorybook = async (url: string, { errorMessage }: { errorMessage: str
     }
     console.log(`Detected Storybook at ${url}`);
 };
-
-const join = (p1: string, p2: string): string =>
-    urlJoin(p1, p2, { trailingSlash: true, queryOptions: { encode: false } });
 
 export default class implements ConnectPlugin {
     stories: Story[] = [];
@@ -89,18 +87,19 @@ export default class implements ConnectPlugin {
             });
 
             if (matchedStory) {
-                links.push(this.createLink(matchedStory));
+                const { storyId } = matchedStory;
+                links.push(this.createLink({ storyId }));
             }
         }
 
-        const { kind, stories } = componentConfig.storybook || {};
-        if (kind) {
+        const { kind: selectedKind, stories } = componentConfig.storybook || {};
+        if (selectedKind) {
             if (stories && stories.length > 0) {
-                stories.forEach(name => {
-                    links.push(this.createLink({ kind, name }));
+                stories.forEach(selectedStory => {
+                    links.push(this.createLink({ selectedKind, selectedStory }));
                 });
             } else {
-                links.push(this.createLink({ kind }));
+                links.push(this.createLink({ selectedKind }));
             }
         }
         return Promise.resolve({ links });
@@ -114,20 +113,10 @@ export default class implements ConnectPlugin {
         return this.stories.length > 0;
     }
 
-    private createLink({ storyId, kind, name }: { storyId?: string; kind: string; name?: string }): Link {
-        let url: string;
-        const encodedKind = encodeURIComponent(kind);
-        if (storyId) {
-            url = join(this.targetUrl, `/?path=/story/${storyId}`);
-        } else if (name) {
-            url = join(
-                this.targetUrl,
-                `/?selectedKind=${encodedKind}&selectedStory=${encodeURIComponent(name)}`
-            );
-        } else {
-            url = join(this.targetUrl, `/?selectedKind=${encodedKind}`);
-        }
-
-        return { type: LinkType.storybook, url };
+    private createLink(params: StorybookLinkParams): Link {
+        return {
+            type: LinkType.storybook,
+            url: createStorybookUrl(this.targetUrl, params)
+        };
     }
 }
