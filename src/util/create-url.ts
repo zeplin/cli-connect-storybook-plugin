@@ -32,14 +32,12 @@ function createStorybookUrl(baseUrl: string, params: StorybookLinkParams): strin
         if (selectedStory) {
             url = urlJoin(baseUrl, {
                 trailingSlash: true,
-                query: { selectedKind, selectedStory },
-                queryOptions: { encode: true }
+                query: { selectedKind, selectedStory }
             });
         } else {
             url = urlJoin(baseUrl, {
                 trailingSlash: true,
-                query: { selectedKind },
-                queryOptions: { encode: true }
+                query: { selectedKind }
             });
         }
     }
