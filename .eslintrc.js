@@ -30,5 +30,14 @@ module.exports = {
         "no-process-env": "off",
         "@typescript-eslint/no-explicit-any": ["error", { "ignoreRestArgs": true }],
         "class-methods-use-this": "off"
-    }
+    },
+    overrides: [
+        {
+            files: ['*.ts', '*.tsx'],
+            rules: {
+                // https://github.com/typescript-eslint/typescript-eslint/issues/342#issuecomment-484739065
+                'no-undef': 'off',
+            },
+        },
+    ]
 }
