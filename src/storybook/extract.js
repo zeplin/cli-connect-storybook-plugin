@@ -1,13 +1,22 @@
 // Original file: https://github.com/chromaui/chromatic-cli/blob/6ed2142/bin/storybook/extract.js
 
-function specFromStory({ id, kind, name, parameters: { component, framework } = {} }, componentPathMap) {
+function specFromStory(
+  { id, kind, name, parameters: { component, framework, fileName } = {} },
+  componentPathMap = {}
+) {
+  let filePath = component ? componentPathMap[component.displayName] : "";
+
+  if (!filePath && typeof fileName === "string") {
+    filePath = fileName;
+  }
+
   return {
     storyId: id,
     name,
     kind,
     displayName: kind.split(/\||\/|\./).slice(-1)[0],
     componentName: component ? component.displayName : "",
-    filePath: component && componentPathMap ? componentPathMap[component.displayName] : ""
+    filePath
   };
 }
 
