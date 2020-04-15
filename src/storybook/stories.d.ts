@@ -3,8 +3,12 @@ export interface Story {
   kind: string;
   name: string;
   displayName: string;
-  componentName: string;
   filePath: string;
+  hasDocsPage: boolean;
+  component: {
+    name: string;
+    filePath: string;
+  };
 }
 
 export function loadStoriesFromURL(url: string): Promise<Story[]>;
