@@ -10,10 +10,12 @@ const SELECTED_KIND = "something/kind";
 const SELECTED_STORY = "story/hello*there!";
 
 const EXPECTED_V5_URL = "http://localhost:9009/?path=/story/kind--story";
+const EXPECTED_V5_DOCS_URL = "http://localhost:9009/?path=/docs/kind--story";
 const EXPECTED_V4_URL_KIND = "http://localhost:9009/?selectedKind=something%2Fkind";
 const EXPECTED_V4_URL_KIND_STORY = "http://localhost:9009/?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21";
 
 const EXPECTED_V5_URL_PATH = "http://localhost:9009/hello/?path=/story/kind--story";
+const EXPECTED_V5_DOCS_URL_PATH = "http://localhost:9009/hello/?path=/docs/kind--story";
 const EXPECTED_V4_URL_PATH_KIND = "http://localhost:9009/hello/?selectedKind=something%2Fkind";
 const EXPECTED_V4_URL_PATH_KIND_STORY = "http://localhost:9009/hello/?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21";
 
@@ -24,6 +26,12 @@ describe("createStorybookUrl", () => {
         const url = createStorybookUrl(baseUrl, { storyId: STORY_ID });
 
         expect(url).toBe(EXPECTED_V5_URL);
+    });
+
+    it("returns Storybook v5+ docs URL if storyId is provided and has docs page", () => {
+        const url = createStorybookUrl(baseUrl, { storyId: STORY_ID, hasDocsPage: true });
+
+        expect(url).toBe(EXPECTED_V5_DOCS_URL);
     });
 
     it("returns Storybook v4 URL if only selectedKind is provided", () => {
@@ -50,6 +58,12 @@ describe("createStorybookUrl", () => {
             const url = createStorybookUrl(baseUrl, { storyId: STORY_ID });
 
             expect(url).toBe(EXPECTED_V5_URL);
+        });
+
+        it("returns Storybook v5+ docs URL if storyId is provided and has docs page", () => {
+            const url = createStorybookUrl(baseUrl, { storyId: STORY_ID, hasDocsPage: true });
+
+            expect(url).toBe(EXPECTED_V5_DOCS_URL);
         });
 
         it("returns Storybook v4 URL if only selectedKind is provided", () => {
@@ -79,6 +93,12 @@ describe("createStorybookUrl", () => {
             expect(url).toBe(EXPECTED_V5_URL_PATH);
         });
 
+        it("returns Storybook v5+ docs URL if storyId is provided and has docs page", () => {
+            const url = createStorybookUrl(baseUrl, { storyId: STORY_ID, hasDocsPage: true });
+
+            expect(url).toBe(EXPECTED_V5_DOCS_URL_PATH);
+        });
+
         it("returns Storybook v4 URL if only selectedKind is provided", () => {
             const url = createStorybookUrl(baseUrl, { selectedKind: SELECTED_KIND });
 
@@ -104,6 +124,12 @@ describe("createStorybookUrl", () => {
             const url = createStorybookUrl(baseUrl, { storyId: STORY_ID });
 
             expect(url).toBe(EXPECTED_V5_URL_PATH);
+        });
+
+        it("returns Storybook v5+ docs URL if storyId is provided and has docs page", () => {
+            const url = createStorybookUrl(baseUrl, { storyId: STORY_ID, hasDocsPage: true });
+
+            expect(url).toBe(EXPECTED_V5_DOCS_URL_PATH);
         });
 
         it("returns Storybook v4 URL if only selectedKind is provided", () => {

@@ -2,6 +2,7 @@ import urlJoin from "proper-url-join";
 
 interface ParamsWithStoryId {
     storyId: string;
+    hasDocsPage?: boolean;
 }
 
 interface ParamsWithKindAndStory {
@@ -21,9 +22,11 @@ function createStorybookUrl(baseUrl: string, params: StorybookLinkParams): strin
     if (isV5(params)) {
         const { storyId } = params;
 
+        const viewMode = params.hasDocsPage ? "docs" : "story";
+
         url = urlJoin(baseUrl, {
             trailingSlash: true,
-            query: { path: `/story/${storyId}` },
+            query: { path: `/${viewMode}/${storyId}` },
             queryOptions: { encode: false }
         });
     } else {

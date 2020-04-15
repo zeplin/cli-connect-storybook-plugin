@@ -20,9 +20,11 @@ const checkStorybook = async (url: string, { errorMessage }: { errorMessage: str
     console.log(`Detected Storybook at ${url}`);
 };
 
+const isPathsEqual = (path1: string, path2: string): boolean =>
+    path.normalize(path1) === path.normalize(path2);
+
 export default class implements ConnectPlugin {
     stories: Story[] = [];
-    storybookVersion?: string;
     targetUrl = "";
 
     async init(pluginContext: PluginContext): Promise<void> {
@@ -75,20 +77,22 @@ export default class implements ConnectPlugin {
             const matchedStory = this.stories.find(story => {
                 const {
                     displayName: storyDisplayName,
-                    componentName,
+                    component,
                     filePath
                 } = story;
 
-                const componentFileName = path.basename(componentConfig.path, path.extname(componentConfig.path));
+                const componentNameFromFilePath =
+                    path.basename(componentConfig.path, path.extname(componentConfig.path));
 
-                return path.relative(".", componentConfig.path) === path.relative(".", filePath) ||
-                    componentName === componentFileName ||
-                    storyDisplayName === componentFileName;
+                return isPathsEqual(componentConfig.path, component.filePath) ||
+                    isPathsEqual(componentConfig.path, filePath) ||
+                    component.name === componentNameFromFilePath ||
+                    storyDisplayName === componentNameFromFilePath;
             });
 
             if (matchedStory) {
-                const { storyId } = matchedStory;
-                links.push(this.createLink({ storyId }));
+                const { storyId, hasDocsPage } = matchedStory;
+                links.push(this.createLink({ storyId, hasDocsPage }));
             }
         }
 

@@ -1,22 +1,33 @@
 // Original file: https://github.com/chromaui/chromatic-cli/blob/6ed2142/bin/storybook/extract.js
 
 function specFromStory(
-  { id, kind, name, parameters: { component, framework, fileName } = {} },
+  {
+    id,
+    kind,
+    name,
+    parameters: {
+      component,
+      framework,
+      fileName,
+      docs
+    } = {}
+  },
   componentPathMap = {}
 ) {
-  let filePath = component ? componentPathMap[component.displayName] : "";
-
-  if (!filePath && typeof fileName === "string") {
-    filePath = fileName;
-  }
+  const componentFilePath = component ? componentPathMap[component.displayName] : "";
+  const filePath = typeof fileName === "string" ? fileName : "";
 
   return {
     storyId: id,
     name,
     kind,
-    displayName: kind.split(/\||\/|\./).slice(-1)[0],
-    componentName: component ? component.displayName : "",
-    filePath
+    displayName: kind.split(/\||\/|\./).slice(-1)[0].trim(),
+    component: {
+      name: component ? component.displayName : "",
+      filePath: componentFilePath
+    },
+    filePath,
+    hasDocsPage: !!docs && !docs.disable
   };
 }
 
@@ -45,7 +56,8 @@ export const extract = global => {
 
   // Storybook 5+ API
   if (storyStore.extract) {
-    return Object.values(storyStore.extract()).map(s => specFromStory(s, componentPathMap));
+    return Object.values(storyStore.extract({ includeDocsOnly: true }))
+      .map(s => specFromStory(s, componentPathMap));
   }
 
   // Storybook 4- API
