@@ -1,12 +1,20 @@
 // Original file: https://github.com/chromaui/chromatic-cli/blob/6ed2142/bin/storybook/extract.js
 
+function getComponentName(component = {}) {
+  if (component.__docgenInfo && component.__docgenInfo.displayName) {
+    return component.__docgenInfo.displayName;
+  }
+
+  return component.name || "";
+}
+
 function specFromStory(
   {
     id,
     kind,
     name,
     parameters: {
-      component,
+      component = {},
       framework,
       fileName,
       docs
@@ -14,19 +22,17 @@ function specFromStory(
   },
   componentPathMap = {}
 ) {
-  const componentFilePath = component ? componentPathMap[component.displayName] : "";
-  const filePath = typeof fileName === "string" ? fileName : "";
-
+  const componentName = getComponentName(component);
   return {
     storyId: id,
     name,
     kind,
     displayName: kind.split(/\||\/|\./).slice(-1)[0].trim(),
     component: {
-      name: component ? component.displayName : "",
-      filePath: componentFilePath
+      name: componentName,
+      filePath: componentPathMap[componentName] || ""
     },
-    filePath,
+    filePath: typeof fileName === "string" ? fileName : "",
     hasDocsPage: !!docs && !docs.disable
   };
 }

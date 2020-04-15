@@ -23,6 +23,23 @@ const checkStorybook = async (url: string, { errorMessage }: { errorMessage: str
 const isPathsEqual = (path1: string, path2: string): boolean =>
     path.normalize(path1) === path.normalize(path2);
 
+const getComponentNameFromFilePath = (filePath: string): string => {
+    let componentName = null;
+
+    const filename = path.basename(filePath, path.extname(filePath));
+    if (filename === "index") {
+        const parts = path.dirname(filePath).split(path.sep);
+        componentName = parts[parts.length - 1];
+    } else {
+        componentName = filename;
+    }
+
+    return componentName.charAt(0)
+        .toUpperCase()
+        .concat(componentName.slice(1))
+        .replace(/-([a-z])/, (_, match) => match.toUpperCase());
+};
+
 export default class implements ConnectPlugin {
     stories: Story[] = [];
     targetUrl = "";
@@ -78,14 +95,13 @@ export default class implements ConnectPlugin {
                 const {
                     displayName: storyDisplayName,
                     component,
-                    filePath
+                    filePath: storyFilePath
                 } = story;
 
-                const componentNameFromFilePath =
-                    path.basename(componentConfig.path, path.extname(componentConfig.path));
+                const componentNameFromFilePath = getComponentNameFromFilePath(componentConfig.path);
 
                 return isPathsEqual(componentConfig.path, component.filePath) ||
-                    isPathsEqual(componentConfig.path, filePath) ||
+                    isPathsEqual(componentConfig.path, storyFilePath) ||
                     component.name === componentNameFromFilePath ||
                     storyDisplayName === componentNameFromFilePath;
             });
