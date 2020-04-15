@@ -53,6 +53,7 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
+    "@storybook/csf": "0.0.1",
     "cross-spawn": "^7.0.1",
     "eventsourcemock": "^2.0.0",
     "https": "^1.0.0",
