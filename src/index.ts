@@ -6,9 +6,16 @@ import path from "path";
 import urlJoin from "proper-url-join";
 import { loadStoriesFromURL, Story } from "./storybook/stories";
 import { startApp, checkResponse } from "./storybook/start-app";
-import { createStoryHyperlink, StoryHyperlinkParams } from "./util/create-hyperlink";
+import { createStoryHyperlink, StoryHyperlinkParams, StoryHyperlinkOptions } from "./util/create-hyperlink";
 
 const IFRAME_PATH = "iframe.html";
+
+interface StorybookPluginConfig {
+    url?: string;
+    startScript?: string;
+    command?: string;
+    format?: "old" | "new";
+}
 
 const checkStorybook = async (url: string, { errorMessage }: { errorMessage: string }): Promise<void> => {
     if (!(await checkResponse(url))) {
@@ -43,16 +50,16 @@ const getComponentNameFromFilePath = (filePath: string): string => {
 export default class implements ConnectPlugin {
     stories: Story[] = [];
     targetUrl = "";
+    config: StorybookPluginConfig = {};
 
     async init(pluginContext: PluginContext): Promise<void> {
-        const url = pluginContext.config?.url as string;
+        this.config = pluginContext.config as unknown as StorybookPluginConfig || {};
+
+        const { url, startScript, command } = this.config;
 
         if (!url) {
             throw new Error(`No Storybook URL is given, please set url parameter on Storybook plugin configuration.`);
         } else {
-            const startScript = pluginContext.config?.startScript as string;
-            const command = pluginContext.config?.command as string;
-
             const sourceUrl = url.endsWith(IFRAME_PATH) ? url : urlJoin(url, IFRAME_PATH);
 
             this.targetUrl = url.endsWith(IFRAME_PATH)
@@ -113,13 +120,17 @@ export default class implements ConnectPlugin {
         }
 
         const { kind: selectedKind, stories } = componentConfig.storybook || {};
+        const { format = "old" } = this.config;
+
         if (selectedKind) {
             if (stories && stories.length > 0) {
                 stories.forEach(selectedStory => {
-                    links.push(this.createLink({ selectedKind, selectedStory }));
+                    links.push(
+                        this.createLink({ selectedKind, selectedStory }, { format })
+                    );
                 });
             } else {
-                links.push(this.createLink({ selectedKind }));
+                links.push(this.createLink({ selectedKind }, { format }));
             }
         }
         return Promise.resolve({ links });
@@ -133,10 +144,10 @@ export default class implements ConnectPlugin {
         return this.stories.length > 0;
     }
 
-    private createLink(params: StoryHyperlinkParams): Link {
+    private createLink(params: StoryHyperlinkParams, options?: StoryHyperlinkOptions): Link {
         return {
             type: LinkType.storybook,
-            url: createStoryHyperlink(this.targetUrl, params)
+            url: createStoryHyperlink(this.targetUrl, params, options)
         };
     }
 }
