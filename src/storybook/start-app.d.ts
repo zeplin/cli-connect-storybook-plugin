@@ -1,8 +1,8 @@
 import { ChildProcess } from "child_process";
 
 interface StartAppParams {
-  scriptName: string;
-  commandName: string;
+  scriptName?: string;
+  commandName?: string;
   args: string[];
   url: string;
   inheritStdio: boolean;
