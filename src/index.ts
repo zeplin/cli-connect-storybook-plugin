@@ -6,7 +6,7 @@ import path from "path";
 import urlJoin from "proper-url-join";
 import { loadStoriesFromURL, Story } from "./storybook/stories";
 import { startApp, checkResponse } from "./storybook/start-app";
-import { createStorybookUrl, StorybookLinkParams } from "./util/create-url";
+import { createStoryHyperlink, StoryHyperlinkParams } from "./util/create-hyperlink";
 
 const IFRAME_PATH = "iframe.html";
 
@@ -133,10 +133,10 @@ export default class implements ConnectPlugin {
         return this.stories.length > 0;
     }
 
-    private createLink(params: StorybookLinkParams): Link {
+    private createLink(params: StoryHyperlinkParams): Link {
         return {
             type: LinkType.storybook,
-            url: createStorybookUrl(this.targetUrl, params)
+            url: createStoryHyperlink(this.targetUrl, params)
         };
     }
 }
