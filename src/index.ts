@@ -61,10 +61,7 @@ export default class implements ConnectPlugin {
             throw new Error(`No Storybook URL is given, please set url parameter on Storybook plugin configuration.`);
         } else {
             const sourceUrl = url.endsWith(IFRAME_PATH) ? url : urlJoin(url, IFRAME_PATH);
-
-            this.targetUrl = url.endsWith(IFRAME_PATH)
-                ? url.substring(0, url.lastIndexOf(IFRAME_PATH))
-                : url;
+            this.targetUrl = url;
 
             if (!startScript && !command) {
                 await checkStorybook(sourceUrl, { errorMessage: "Make sure you've started it and it is accessible." });
