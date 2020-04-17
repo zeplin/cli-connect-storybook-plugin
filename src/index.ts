@@ -95,7 +95,7 @@ export default class implements ConnectPlugin {
         const links: Link[] = [];
 
         if (this.storiesLoaded()) {
-            const matchedStory = this.stories.find(story => {
+            this.stories.filter(story => {
                 const {
                     displayName: storyDisplayName,
                     component,
@@ -108,12 +108,10 @@ export default class implements ConnectPlugin {
                     isPathsEqual(componentConfig.path, storyFilePath) ||
                     component.name === componentNameFromFilePath ||
                     storyDisplayName === componentNameFromFilePath;
-            });
-
-            if (matchedStory) {
+            }).forEach(matchedStory => {
                 const { storyId, hasDocsPage } = matchedStory;
                 links.push(this.createLink({ storyId, hasDocsPage }));
-            }
+            });
         }
 
         const { kind: selectedKind, stories } = componentConfig.storybook || {};
