@@ -43,24 +43,32 @@ function createStoryHyperlink(
 ): string {
     let url: string;
 
+    // Trailing slash is required if the Storybook is hosted under a path but if
+    // BaseUrl just points to the iframe.html inside Storybook, trailing slash should not exist
+    const trailingSlash = !baseUrl.endsWith("iframe.html");
+
     if (isParamsWithKindAndStory(params) && options.format === "new") {
         url = urlJoin(baseUrl, {
-            trailingSlash: true,
+            trailingSlash,
             query: { path: `/story/${toStoryId(params)}` },
             queryOptions: { encode: false }
         });
     } else if (isParamsWithKindAndStory(params)) {
         url = urlJoin(baseUrl, {
-            trailingSlash: true,
+            trailingSlash,
             query: toLegacyQuery(params)
         });
     } else {
         const { storyId } = params;
 
-        const viewMode = params.hasDocsPage ? "docs" : "story";
+        // Docs hyperlinks somehow cause error if iframe is accessed directly
+        // To workaround this /story/ is enforced even if a docs page exist
+        const viewMode = params.hasDocsPage && !baseUrl.endsWith("iframe.html")
+            ? "docs"
+            : "story";
 
         url = urlJoin(baseUrl, {
-            trailingSlash: true,
+            trailingSlash,
             query: { path: `/${viewMode}/${storyId}` },
             queryOptions: { encode: false }
         });
