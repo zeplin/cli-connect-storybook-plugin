@@ -18,13 +18,13 @@ Since Zeplin CLI Storybook Plugin requires a running Storybook instance to colle
 
 Provide the URL of a remote Storybook instance.
 
-```json
+```jsonc
 {
     ...
     "plugins" : [{
         "name": "@zeplin/cli-connect-storybook-plugin",
         "config": {
-            "url": "<protocol>://<hostname>:<port>",
+            "url": "<protocol>://<hostname>:<port>", // Defaults to http://localhost:6006
         }
     }],
     ...
@@ -39,14 +39,14 @@ Zeplin CLI Storybook Plugin can also start a local Storybook instance to collect
 
 Provide the name of the npm script to start a Storybook instance.
 
-```json
+```jsonc
 {
     ...
     "plugins" : [{
         "name": "@zeplin/cli-connect-storybook-plugin",
         "config": {
-            "url": "http://localhost:<port>",
-            "startScript": "<name of the npm script>",
+            "url": "http://localhost:<port>", // Defaults to http://localhost:6006
+            "startScript": "<name of the npm script>"
         }
     }],
     ...
@@ -57,21 +57,37 @@ Provide the name of the npm script to start a Storybook instance.
 
 Provide a custom command to run to start a Storybook instance.
 
-```json
+```jsonc
 {
     ...
     "plugins" : [{
         "name": "@zeplin/cli-connect-storybook-plugin",
         "config": {
-            "url": "http://localhost:<port>",
-            "command": "<the command to start storybook server>",
+            "url": "http://localhost:<port>", // Defaults to http://localhost:6006
+            "command": "<the command to start storybook server>"
         }
     }],
     ...
 }
 ```
 
-☝️ _For all alternatives, the URL in Zeplin will be based on the `url` property you define._
+☝️ _For all alternatives, the generated hyperlinks in Zeplin will be based on the `url` property you define._
+
+```jsonc
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "http://localhost:<port>", // Defaults to http://localhost:6006
+            "startScript": "<the command to start storybook server>",
+            "targetUrl": "<protocol>://<hostname>:<port>"
+        }
+    }],
+    ...
+}
+```
+☝️ _You can use optional `targetUrl` parameter to generate the hyperlinks to a remote Storybook_
 
 Once the Storybook instance is configured, run CLI `connect` command.
 
@@ -89,7 +105,7 @@ Zeplin CLI Storybook Plugin automatically attempts to match components with stor
 
 It's also possible to match components with stories manually. Set the `storybook` property components (within the configuration file, `.zeplin/components.json`) for each component you want to manually match and provide the story kind and name(s).
 
-```json
+```jsonc
 {
     ...
     "components": [
@@ -109,6 +125,44 @@ It's also possible to match components with stories manually. Set the `storybook
             }
         }
     ]
+    ...
+}
+```
+
+### URL format for manual matching
+
+For backwards compatibility, manually defined component stories will generate hyperlinks using old style Storybook URL structure. In order to generate new style hyperlinks (for Storybook v5+) use the following configuration. Next major release will generate new style hyperlinks by default.
+
+```jsonc
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "http://localhost:6006",
+            "startScript": "storybook",
+            "format": "new"
+        }
+    }],
+    ...
+}
+```
+
+### Fast fail on Storybook errors
+
+Set `failFastOnErrors` parameter to true to abort on any internal errors happened in Storybook. By default, the plugin will try to fetch whatever story it can retrieve from Storybook even if it reports any errors.
+
+```jsonc
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "http://localhost:6006",
+            "startScript": "storybook",
+            "failFastOnErrors": true
+        }
+    }],
     ...
 }
 ```
