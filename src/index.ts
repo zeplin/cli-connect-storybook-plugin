@@ -4,9 +4,12 @@ import {
 import { dedent } from "ts-dedent";
 import path from "path";
 import urlJoin from "proper-url-join";
+// eslint-disable-next-line import/default
+import updateNotifier from "update-notifier";
 import { loadStoriesFromURL, Story } from "./storybook/stories";
 import { startApp, checkResponse } from "./storybook/start-app";
 import { createStoryHyperlink, StoryHyperlinkParams, StoryHyperlinkOptions } from "./util/create-hyperlink";
+import { name, version } from "../package.json";
 
 const IFRAME_PATH = "iframe.html";
 
@@ -19,6 +22,15 @@ interface StorybookPluginConfig {
     command?: string;
     format?: "old" | "new";
 }
+
+updateNotifier({
+    pkg: {
+        name,
+        version
+    },
+    updateCheckInterval: 0,
+    shouldNotifyInNpmScript: true
+}).notify();
 
 const checkStorybook = async (url: string, { errorMessage }: { errorMessage: string }): Promise<void> => {
     if (!(await checkResponse(url))) {
