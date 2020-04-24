@@ -7,6 +7,7 @@ import path from 'path';
 
 const POLL_INTERVAL = 1000,
 const TIMEOUT = 5 * 60 * 1000,
+const PROMPT_TIMEOUT = 20 * 1000,
 
 const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
@@ -20,7 +21,11 @@ export async function checkResponse(url) {
 }
 
 async function waitForResponse(child, url) {
+  console.log("Waiting Storybook to start…");
+
   const timeoutAt = Date.now() + TIMEOUT;
+  let promptAt = Date.now() + PROMPT_TIMEOUT;
+
   return new Promise((resolve, reject) => {
     let resolved = false;
     async function check() {
@@ -30,6 +35,11 @@ async function waitForResponse(child, url) {
           new Error(`No server responding at ${url} within ${TIMEOUT / 1000} seconds.`)
         );
         return;
+      }
+
+      if (Date.now() > promptAt) {
+        console.log(`No server responding at ${url}, trying again.`);
+        promptAt = Date.now() + PROMPT_TIMEOUT;
       }
 
       if (await checkResponse(url)) {

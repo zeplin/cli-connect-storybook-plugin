@@ -10,8 +10,11 @@ import { createStoryHyperlink, StoryHyperlinkParams, StoryHyperlinkOptions } fro
 
 const IFRAME_PATH = "iframe.html";
 
+const DEFAULT_SOURCE_URL = "http://localhost:6006";
+
 interface StorybookPluginConfig {
     url?: string;
+    targetUrl?: string;
     startScript?: string;
     command?: string;
     format?: "old" | "new";
@@ -50,40 +53,39 @@ const getComponentNameFromFilePath = (filePath: string): string => {
 export default class implements ConnectPlugin {
     stories: Story[] = [];
     targetUrl = "";
+    sourceUrl = "";
     config: StorybookPluginConfig = {};
 
     async init(pluginContext: PluginContext): Promise<void> {
         this.config = pluginContext.config as unknown as StorybookPluginConfig || {};
 
-        const { url, startScript, command } = this.config;
+        const { url = DEFAULT_SOURCE_URL, targetUrl, startScript, command } = this.config;
 
-        if (!url) {
-            throw new Error(`No Storybook URL is given, please set url parameter on Storybook plugin configuration.`);
+        this.sourceUrl = url.endsWith(IFRAME_PATH) ? url : urlJoin(url, IFRAME_PATH);
+        this.targetUrl = targetUrl || url;
+
+        if (!url && !startScript && !command) {
+            throw new Error(`Missing Storybook configuration. `);
+        } else if (!startScript && !command) {
+            await checkStorybook(this.sourceUrl, { errorMessage: "Make sure you've started it and it is accessible." });
+            this.stories = await loadStoriesFromURL(this.sourceUrl);
         } else {
-            const sourceUrl = url.endsWith(IFRAME_PATH) ? url : urlJoin(url, IFRAME_PATH);
-            this.targetUrl = url;
+            const sbProcess = await startApp({
+                args: ["--ci"],
+                scriptName: startScript,
+                commandName: command,
+                url: this.sourceUrl,
+                inheritStdio: false
+            });
 
-            if (!startScript && !command) {
-                await checkStorybook(sourceUrl, { errorMessage: "Make sure you've started it and it is accessible." });
-                this.stories = await loadStoriesFromURL(sourceUrl);
-            } else {
-                const sbProcess = await startApp({
-                    args: ["--ci"],
-                    scriptName: startScript,
-                    commandName: command,
-                    url: sourceUrl,
-                    inheritStdio: false
-                });
+            await checkStorybook(this.sourceUrl, {
+                errorMessage:
+                    "Make sure url parameter targets the instance started by startScript or command."
+            });
 
-                await checkStorybook(sourceUrl, {
-                    errorMessage:
-                        "Make sure url parameter targets the instance started by startScript or command."
-                });
+            this.stories = await loadStoriesFromURL(this.sourceUrl);
 
-                this.stories = await loadStoriesFromURL(sourceUrl);
-
-                sbProcess?.kill();
-            }
+            sbProcess?.kill();
         }
 
         if (this.storiesLoaded()) {
