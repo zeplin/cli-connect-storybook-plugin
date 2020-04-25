@@ -9,7 +9,7 @@ import { addShimsToJSDOM } from './jsdom-shims';
 
 const separator = '=========================';
 
-export async function loadStoriesFromURL(url) {
+export async function loadStoriesFromURL(url, { failFastOnErrors = false }) {
   const warnings = [];
   const errors = [];
   const virtualConsole = new VirtualConsole();
@@ -85,11 +85,16 @@ export async function loadStoriesFromURL(url) {
       );
     }
 
-    console.log(dedent`
-        This may lead to some stories not working right or getting detected by Chromatic
+    if (failFastOnErrors) {
+      console.log("Fast fail is enabled. Aborting…");
+      throw new Error("Storybook reported errors.");
+    } else {
+      console.log(dedent`
+        This may lead to some stories not working right or getting detected by Zeplin CLI
         We suggest you fix the errors, but we will continue anyway..
         ${separator}
       `);
+    }
   }
 
   try {

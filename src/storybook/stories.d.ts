@@ -11,4 +11,4 @@ export interface Story {
   };
 }
 
-export function loadStoriesFromURL(url: string): Promise<Story[]>;
+export function loadStoriesFromURL(url: string, params: { failFastOnErrors?: boolean }): Promise<Story[]>;
