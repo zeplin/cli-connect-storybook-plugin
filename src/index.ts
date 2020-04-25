@@ -21,6 +21,7 @@ interface StorybookPluginConfig {
     startScript?: string;
     command?: string;
     format?: "old" | "new";
+    failFastOnErrors?: boolean;
 }
 
 updateNotifier({
@@ -71,7 +72,13 @@ export default class implements ConnectPlugin {
     async init(pluginContext: PluginContext): Promise<void> {
         this.config = pluginContext.config as unknown as StorybookPluginConfig || {};
 
-        const { url = DEFAULT_SOURCE_URL, targetUrl, startScript, command } = this.config;
+        const {
+            url = DEFAULT_SOURCE_URL,
+            targetUrl,
+            startScript,
+            command,
+            failFastOnErrors
+        } = this.config;
 
         this.sourceUrl = url.endsWith(IFRAME_PATH) ? url : urlJoin(url, IFRAME_PATH);
         this.targetUrl = targetUrl || url;
@@ -80,7 +87,7 @@ export default class implements ConnectPlugin {
             throw new Error(`Missing Storybook configuration. `);
         } else if (!startScript && !command) {
             await checkStorybook(this.sourceUrl, { errorMessage: "Make sure you've started it and it is accessible." });
-            this.stories = await loadStoriesFromURL(this.sourceUrl);
+            this.stories = await loadStoriesFromURL(this.sourceUrl, { failFastOnErrors });
         } else {
             const sbProcess = await startApp({
                 args: ["--ci"],
@@ -95,9 +102,11 @@ export default class implements ConnectPlugin {
                     "Make sure url parameter targets the instance started by startScript or command."
             });
 
-            this.stories = await loadStoriesFromURL(this.sourceUrl);
-
-            sbProcess?.kill();
+            try {
+                this.stories = await loadStoriesFromURL(this.sourceUrl, { failFastOnErrors });
+            } finally {
+                sbProcess?.kill();
+            }
         }
 
         if (this.storiesLoaded()) {
