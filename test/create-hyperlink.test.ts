@@ -37,9 +37,29 @@ describe("createStoryHyperlink", () => {
     });
 
     it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-        const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID, hasDocsPage: true });
+        const hyperlink = createStoryHyperlink(
+            baseUrl,
+            { storyId: STORY_ID, hasDocsPage: true },
+            { useDocsPage: true }
+        );
 
         expect(hyperlink).toBe(EXPECTED_V5_DOCS_HYPERLINK);
+    });
+
+    it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy", () => {
+        const hyperlink = createStoryHyperlink(
+            baseUrl,
+            { storyId: STORY_ID, hasDocsPage: true }
+        );
+
+        const hyperlink2 = createStoryHyperlink(
+            baseUrl,
+            { storyId: STORY_ID, hasDocsPage: true },
+            { useDocsPage: false }
+        );
+
+        expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK);
+        expect(hyperlink2).toBe(EXPECTED_V5_HYPERLINK);
     });
 
     it("returns Storybook v5+ hyperlink if both selectedKind and selectedStory is provided", () => {
@@ -89,9 +109,29 @@ describe("createStoryHyperlink", () => {
         });
 
         it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID, hasDocsPage: true });
+            const hyperlink = createStoryHyperlink(
+                baseUrl,
+                { storyId: STORY_ID, hasDocsPage: true },
+                { useDocsPage: true }
+            );
 
             expect(hyperlink).toBe(EXPECTED_V5_DOCS_HYPERLINK);
+        });
+
+        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy", () => {
+            const hyperlink = createStoryHyperlink(
+                baseUrl,
+                { storyId: STORY_ID, hasDocsPage: true }
+            );
+
+            const hyperlink2 = createStoryHyperlink(
+                baseUrl,
+                { storyId: STORY_ID, hasDocsPage: true },
+                { useDocsPage: false }
+            );
+
+            expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK);
+            expect(hyperlink2).toBe(EXPECTED_V5_HYPERLINK);
         });
 
         it("returns Storybook v4 hyperlink if only selectedKind is provided", () => {
@@ -122,9 +162,29 @@ describe("createStoryHyperlink", () => {
         });
 
         it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID, hasDocsPage: true });
+            const hyperlink = createStoryHyperlink(
+                baseUrl,
+                { storyId: STORY_ID, hasDocsPage: true },
+                { useDocsPage: true }
+            );
 
             expect(hyperlink).toBe(EXPECTED_V5_DOCS_HYPERLINK_PATH);
+        });
+
+        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy", () => {
+            const hyperlink = createStoryHyperlink(
+                baseUrl,
+                { storyId: STORY_ID, hasDocsPage: true }
+            );
+
+            const hyperlink2 = createStoryHyperlink(
+                baseUrl,
+                { storyId: STORY_ID, hasDocsPage: true },
+                { useDocsPage: false }
+            );
+
+            expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK_PATH);
+            expect(hyperlink2).toBe(EXPECTED_V5_HYPERLINK_PATH);
         });
 
         it("returns Storybook v4 hyperlink if only selectedKind is provided", () => {
@@ -155,9 +215,29 @@ describe("createStoryHyperlink", () => {
         });
 
         it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID, hasDocsPage: true });
+            const hyperlink = createStoryHyperlink(
+                baseUrl,
+                { storyId: STORY_ID, hasDocsPage: true },
+                { useDocsPage: true }
+            );
 
             expect(hyperlink).toBe(EXPECTED_V5_DOCS_HYPERLINK_PATH);
+        });
+
+        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
+            const hyperlink = createStoryHyperlink(
+                baseUrl,
+                { storyId: STORY_ID, hasDocsPage: true }
+            );
+
+            const hyperlink2 = createStoryHyperlink(
+                baseUrl,
+                { storyId: STORY_ID, hasDocsPage: true },
+                { useDocsPage: false }
+            );
+
+            expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK_PATH);
+            expect(hyperlink2).toBe(EXPECTED_V5_HYPERLINK_PATH);
         });
 
         it("returns Storybook v4 hyperlink if only selectedKind is provided", () => {
