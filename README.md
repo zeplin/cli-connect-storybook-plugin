@@ -167,6 +167,25 @@ Set `failFastOnErrors` parameter to true to abort on any internal errors happene
 }
 ```
 
+### Generate DocsPage hyperlinks
+
+You can use `useDocsPage` parameter to generate DocsPage hyperlinks if you use [@storybook/addon-docs](https://github.com/storybookjs/storybook/tree/master/addons/docs) in your Storybook instance.
+
+```jsonc
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "http://localhost:6006",
+            "startScript": "storybook",
+            "useDocsPage": true
+        }
+    }],
+    ...
+}
+```
+
 ## About Connected Components
 
 [Connected Components](https://blog.zeplin.io/introducing-connected-components-components-in-design-and-code-in-harmony-aa894ed5bd95) in Zeplin lets you access components in your codebase directly on designs in Zeplin, with links to Storybook, GitHub and any other source of documentation based on your workflow. 🧩
