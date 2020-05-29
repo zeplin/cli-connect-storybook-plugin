@@ -21,6 +21,7 @@ interface StorybookPluginConfig {
     startScript?: string;
     command?: string;
     format?: "old" | "new";
+    useDocsPage?: boolean;
     failFastOnErrors?: boolean;
 }
 
@@ -68,6 +69,7 @@ export default class implements ConnectPlugin {
     targetUrl = "";
     sourceUrl = "";
     config: StorybookPluginConfig = {};
+    useDocsPage?: boolean;
 
     async init(pluginContext: PluginContext): Promise<void> {
         this.config = pluginContext.config as unknown as StorybookPluginConfig || {};
@@ -77,11 +79,13 @@ export default class implements ConnectPlugin {
             targetUrl,
             startScript,
             command,
-            failFastOnErrors
+            failFastOnErrors,
+            useDocsPage
         } = this.config;
 
         this.sourceUrl = url.endsWith(IFRAME_PATH) ? url : urlJoin(url, IFRAME_PATH);
         this.targetUrl = targetUrl || url;
+        this.useDocsPage = useDocsPage;
 
         if (!url && !startScript && !command) {
             throw new Error(`Missing Storybook configuration. `);
@@ -133,7 +137,10 @@ export default class implements ConnectPlugin {
                     storyDisplayName === componentNameFromFilePath;
             }).forEach(matchedStory => {
                 const { storyId, hasDocsPage } = matchedStory;
-                links.push(this.createLink({ storyId, hasDocsPage }));
+                links.push(this.createLink(
+                    { storyId, hasDocsPage },
+                    { useDocsPage: this.useDocsPage }
+                ));
             });
         }
 

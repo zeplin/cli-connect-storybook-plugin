@@ -12,7 +12,8 @@ interface ParamsWithKindAndStory {
 }
 
 interface StoryHyperlinkOptions {
-    format: "old" | "new";
+    format?: "old" | "new";
+    useDocsPage?: boolean;
 }
 
 type StoryHyperlinkParams = ParamsWithStoryId | ParamsWithKindAndStory;
@@ -39,7 +40,7 @@ function toLegacyQuery(params: ParamsWithKindAndStory): { [key: string]: string 
 function createStoryHyperlink(
     baseUrl: string,
     params: StoryHyperlinkParams,
-    options: StoryHyperlinkOptions = { format: "old" }
+    options: StoryHyperlinkOptions = { format: "old", useDocsPage: false }
 ): string {
     let url: string;
 
@@ -63,7 +64,7 @@ function createStoryHyperlink(
 
         // Docs hyperlinks somehow cause error if iframe is accessed directly
         // To workaround this /story/ is enforced even if a docs page exist
-        const viewMode = params.hasDocsPage && !baseUrl.endsWith("iframe.html")
+        const viewMode = params.hasDocsPage && options.useDocsPage && !baseUrl.endsWith("iframe.html")
             ? "docs"
             : "story";
 
