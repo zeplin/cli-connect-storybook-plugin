@@ -37,6 +37,18 @@ function toLegacyQuery(params: ParamsWithKindAndStory): { [key: string]: string 
     return selectedStory ? { selectedKind, selectedStory } : { selectedKind };
 }
 
+function shouldUseTrailingSlash(url: string): boolean {
+    try {
+        const path = new URL(url).pathname;
+
+        // Trailing slash is required if the Storybook is hosted under a path but if
+        // BaseUrl just points to the iframe.html or index.html, trailing slash should not exist
+        return !(/\.\w+$/.test(path));
+    } catch (e) {
+        return false;
+    }
+}
+
 function createStoryHyperlink(
     baseUrl: string,
     params: StoryHyperlinkParams,
@@ -44,9 +56,7 @@ function createStoryHyperlink(
 ): string {
     let url: string;
 
-    // Trailing slash is required if the Storybook is hosted under a path but if
-    // BaseUrl just points to the iframe.html inside Storybook, trailing slash should not exist
-    const trailingSlash = !baseUrl.endsWith("iframe.html");
+    const trailingSlash = shouldUseTrailingSlash(baseUrl);
 
     if (isParamsWithKindAndStory(params) && options.format === "new") {
         url = urlJoin(baseUrl, {
@@ -62,7 +72,7 @@ function createStoryHyperlink(
     } else {
         const { storyId } = params;
 
-        // Docs hyperlinks somehow cause error if iframe is accessed directly
+        // Docs hyperlinks somehow cause error if iframe.html is accessed directly
         // To workaround this /story/ is enforced even if a docs page exist
         const viewMode = params.hasDocsPage && options.useDocsPage && !baseUrl.endsWith("iframe.html")
             ? "docs"
