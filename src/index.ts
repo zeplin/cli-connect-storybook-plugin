@@ -25,6 +25,11 @@ interface StorybookPluginConfig {
     failFastOnErrors?: boolean;
 }
 
+interface StorybookComponentConfig {
+    kind: string;
+    stories: string[];
+}
+
 updateNotifier({
     pkg: {
         name,
@@ -144,7 +149,7 @@ export default class implements ConnectPlugin {
             });
         }
 
-        const { kind: selectedKind, stories } = componentConfig.storybook || {};
+        const { kind: selectedKind, stories } = componentConfig.storybook as StorybookComponentConfig || {};
         const { format = "old" } = this.config;
 
         if (selectedKind) {
