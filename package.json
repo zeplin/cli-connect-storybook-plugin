@@ -51,7 +51,7 @@
     "jest": "^24.9.0",
     "prop-types": "^15.7.2",
     "ts-jest": "^23.10.0",
-    "typescript": "^3.7.3"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "@storybook/csf": "0.0.1",
