@@ -42,7 +42,7 @@
     "@types/update-notifier": "^4.1.0",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
-    "@zeplin/cli": "^0.3.0",
+    "@zeplin/cli": "^1.0.4",
     "@zeplin/eslint-config": "^2.2.0",
     "copyfiles": "^2.1.1",
     "eslint": "^6.4.0",
