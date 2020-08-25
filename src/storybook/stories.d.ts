@@ -11,4 +11,6 @@ export interface Story {
   };
 }
 
-export function loadStoriesFromURL(url: string, params: { failFastOnErrors?: boolean }): Promise<Story[]>;
+export function loadStoriesFromURL(
+  url: string, params: { ignoreSSLErrors?: boolean; failFastOnErrors?: boolean }
+): Promise<Story[]>;

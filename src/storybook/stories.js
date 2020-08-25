@@ -9,7 +9,7 @@ import { addShimsToJSDOM } from './jsdom-shims';
 
 const separator = '=========================';
 
-export async function loadStoriesFromURL(url, { failFastOnErrors = false }) {
+export async function loadStoriesFromURL(url, { ignoreSSLErrors = false, failFastOnErrors = false }) {
   const warnings = [];
   const errors = [];
   const virtualConsole = new VirtualConsole();
@@ -25,7 +25,8 @@ export async function loadStoriesFromURL(url, { failFastOnErrors = false }) {
   });
 
   const resourceLoader = new ResourceLoader({
-    userAgent: "Zeplin CLI"
+    userAgent: "Zeplin CLI",
+    strictSSL: !ignoreSSLErrors
   });
   const dom = await JSDOM.fromURL(url, {
     userAgent: "Zeplin CLI",
