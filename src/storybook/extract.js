@@ -1,6 +1,7 @@
 // Original file: https://github.com/chromaui/chromatic-cli/blob/6ed2142/bin/storybook/extract.js
 
-function getComponentName(component = {}) {
+function getComponentName(_component) {
+  const component = _component || {};
   if (component.__docgenInfo && component.__docgenInfo.displayName) {
     return component.__docgenInfo.displayName;
   }
