@@ -186,7 +186,7 @@ You can use `useDocsPage` parameter to generate DocsPage hyperlinks if you use [
 }
 ```
 
-### Ignore SSL certificate errros
+### Ignore SSL certificate errors
 
 In case you would need to ignore SSL certificate errors:
 ```jsonc
