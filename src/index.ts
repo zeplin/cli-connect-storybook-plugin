@@ -23,6 +23,7 @@ interface StorybookPluginConfig {
     format?: "old" | "new";
     useDocsPage?: boolean;
     failFastOnErrors?: boolean;
+    ignoreSSLErrors?: boolean;
 }
 
 interface StorybookComponentConfig {
@@ -84,8 +85,9 @@ export default class implements ConnectPlugin {
             targetUrl,
             startScript,
             command,
+            useDocsPage,
             failFastOnErrors,
-            useDocsPage
+            ignoreSSLErrors
         } = this.config;
 
         this.sourceUrl = url.endsWith(IFRAME_PATH) ? url : urlJoin(url, IFRAME_PATH);
@@ -96,7 +98,7 @@ export default class implements ConnectPlugin {
             throw new Error(`Missing Storybook configuration. `);
         } else if (!startScript && !command) {
             await checkStorybook(this.sourceUrl, { errorMessage: "Make sure you've started it and it is accessible." });
-            this.stories = await loadStoriesFromURL(this.sourceUrl, { failFastOnErrors });
+            this.stories = await loadStoriesFromURL(this.sourceUrl, { ignoreSSLErrors, failFastOnErrors });
         } else {
             const sbProcess = await startApp({
                 args: ["--ci"],
@@ -112,7 +114,7 @@ export default class implements ConnectPlugin {
             });
 
             try {
-                this.stories = await loadStoriesFromURL(this.sourceUrl, { failFastOnErrors });
+                this.stories = await loadStoriesFromURL(this.sourceUrl, { ignoreSSLErrors, failFastOnErrors });
             } finally {
                 sbProcess?.kill();
             }

@@ -186,6 +186,24 @@ You can use `useDocsPage` parameter to generate DocsPage hyperlinks if you use [
 }
 ```
 
+### Ignore SSL certificate errros
+
+In case you would need to ignore SSL certificate errors:
+```jsonc
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "https://storybook.example.com",
+            "ignoreSSLErrors": true
+        }
+    }],
+    ...
+}
+```
+
+
 ## About Connected Components
 
 [Connected Components](https://blog.zeplin.io/introducing-connected-components-components-in-design-and-code-in-harmony-aa894ed5bd95) in Zeplin lets you access components in your codebase directly on designs in Zeplin, with links to Storybook, GitHub and any other source of documentation based on your workflow. 🧩
