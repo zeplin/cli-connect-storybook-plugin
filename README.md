@@ -2,6 +2,23 @@
 
 [Zeplin CLI](https://github.com/zeplin/cli) plugin to generate Storybook links for Zeplin components, inspired by [chromatic-cli](https://github.com/chromaui/chromatic-cli).
 
+## Contents
+
+* [Installation](#installation)
+* [Usage](#usage)
+  + [Remote Storybook instance](#remote-storybook-instance)
+  + [Local Storybook instance](#local-storybook-instance)
+    - [npm script](#npm-script)
+    - [Custom command](#custom-command)
+  + [Matching components with stories](#matching-components-with-stories)
+  + [URL format for manual matching](#url-format-for-manual-matching)
+  + [Use manual matching without connecting a working Storybook](#use-manual-matching-without-connecting-a-working-storybook)
+  + [Fast fail on Storybook errors](#fast-fail-on-storybook-errors)
+  + [Generate DocsPage hyperlinks](#generate-docspage-hyperlinks)
+  + [Ignore SSL certificate errors](#ignore-ssl-certificate-errors)
+  + [Using Basic Authentication](#using-basic-authentication)
+* [About Connected Components](#about-connected-components)
+
 ## Installation
 
 Install the plugin using npm.
@@ -95,7 +112,7 @@ Once the Storybook instance is configured, run CLI `connect` command.
 zeplin connect
 ```
 
-## Matching components with stories
+### Matching components with stories
 
 Zeplin CLI Storybook Plugin automatically attempts to match components with stories following these rules:
 
@@ -141,6 +158,25 @@ For backwards compatibility, manually defined component stories will generate hy
         "config": {
             "url": "http://localhost:6006",
             "startScript": "storybook",
+            "format": "new"
+        }
+    }],
+    ...
+}
+```
+
+### Use manual matching without connecting a working Storybook
+
+Use `fetchStories` flag to disable connecting and fetching stories from the given URL, so that you can utilize manual configuration to create Storybook hyperlinks. It is recommended to set it false if the plugin cannot match components using the rules mentioned above.
+
+```jsonc
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "https://storybook.example.com",
+            "fetchStories": false,
             "format": "new"
         }
     }],
@@ -197,6 +233,22 @@ In case you would need to ignore SSL certificate errors:
         "config": {
             "url": "https://storybook.example.com",
             "ignoreSSLErrors": true
+        }
+    }],
+    ...
+}
+```
+
+
+### Using Basic Authentication
+
+```jsonc
+{
+    ...
+    "plugins" : [{
+        "name": "@zeplin/cli-connect-storybook-plugin",
+        "config": {
+            "url": "https://<username>:<password>@storybook.example.com"
         }
     }],
     ...
