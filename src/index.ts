@@ -17,6 +17,7 @@ const DEFAULT_SOURCE_URL = "http://localhost:6006";
 
 interface StorybookPluginConfig {
     url?: string;
+    fetchStories?: boolean;
     targetUrl?: string;
     startScript?: string;
     command?: string;
@@ -82,6 +83,7 @@ export default class implements ConnectPlugin {
 
         const {
             url = DEFAULT_SOURCE_URL,
+            fetchStories = true,
             targetUrl,
             startScript,
             command,
@@ -94,9 +96,12 @@ export default class implements ConnectPlugin {
         this.targetUrl = targetUrl || url;
         this.useDocsPage = useDocsPage;
 
-        if (!url && !startScript && !command) {
-            throw new Error(`Missing Storybook configuration. `);
-        } else if (!startScript && !command) {
+        if (!fetchStories) {
+            console.log("Fetching stories from Storybook instance is disabled.");
+            return;
+        }
+
+        if (!startScript && !command) {
             await checkStorybook(this.sourceUrl, { errorMessage: "Make sure you've started it and it is accessible." });
             this.stories = await loadStoriesFromURL(this.sourceUrl, { ignoreSSLErrors, failFastOnErrors });
         } else {
