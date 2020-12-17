@@ -5,6 +5,8 @@ import https from 'https';
 import fetch from 'node-fetch';
 import path from 'path';
 
+import { getLogger } from '../util/logger';
+
 const POLL_INTERVAL = 1000,
 const TIMEOUT = 5 * 60 * 1000,
 const PROMPT_TIMEOUT = 20 * 1000,
@@ -21,7 +23,9 @@ export async function checkResponse(url) {
 }
 
 async function waitForResponse(child, url) {
-  console.log("Waiting Storybook to start…");
+  const logger = getLogger();
+
+  logger.info("Waiting Storybook to start…");
 
   const timeoutAt = Date.now() + TIMEOUT;
   let promptAt = Date.now() + PROMPT_TIMEOUT;
@@ -38,7 +42,7 @@ async function waitForResponse(child, url) {
       }
 
       if (Date.now() > promptAt) {
-        console.log(`No server responding at ${url}, trying again.`);
+        logger.warn(`No server responding at ${url}, trying again.`);
         promptAt = Date.now() + PROMPT_TIMEOUT;
       }
 
