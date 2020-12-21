@@ -10,6 +10,7 @@ import { loadStoriesFromURL, Story } from "./storybook/stories";
 import { startApp, checkResponse } from "./storybook/start-app";
 import { createStoryHyperlink, StoryHyperlinkParams, StoryHyperlinkOptions } from "./util/create-hyperlink";
 import { name, version } from "../package.json";
+import { getLogger, setLogger } from "./util/logger";
 
 const IFRAME_PATH = "iframe.html";
 
@@ -48,7 +49,7 @@ const checkStorybook = async (url: string, { errorMessage }: { errorMessage: str
             ${errorMessage}
         `);
     }
-    console.log(`Detected Storybook at ${url}`);
+    getLogger()?.info(`Detected Storybook at ${url}`);
 };
 
 const isPathsEqual = (path1: string, path2: string): boolean =>
@@ -96,8 +97,11 @@ export default class implements ConnectPlugin {
         this.targetUrl = targetUrl || url;
         this.useDocsPage = useDocsPage;
 
+        setLogger(pluginContext.logger);
+        const logger = getLogger();
+
         if (!fetchStories) {
-            console.log("Fetching stories from Storybook instance is disabled.");
+            logger?.info("Fetching stories from Storybook instance is disabled.");
             return;
         }
 
@@ -126,7 +130,7 @@ export default class implements ConnectPlugin {
         }
 
         if (this.storiesLoaded()) {
-            console.log(`Loaded ${this.stories.length} stories from Storybook.`);
+            logger?.info(`Loaded ${this.stories.length} stories from Storybook.`);
         }
     }
 

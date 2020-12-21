@@ -6,6 +6,7 @@ import dedent from 'ts-dedent';
 import { extract } from './extract';
 
 import { addShimsToJSDOM } from './jsdom-shims';
+import { getLogger } from '../util/logger';
 
 const separator = '=========================';
 
@@ -52,10 +53,11 @@ export async function loadStoriesFromURL(url, { ignoreSSLErrors = false, failFas
   // If the app logged something to console.error, it's probably, but not definitely an issue.
   // See https://github.com/hichroma/chromatic/issues/757
   if (errors.length || warnings.length) {
-    console.log('The following problems were reported from your storybook:');
+    const logger = getLogger();
+    logger.info('The following problems were reported from your storybook:');
 
     if (errors.length) {
-      console.log(
+      logger.error(
         errors.reduce(
           (acc, i) => dedent`
               ${acc}
@@ -71,7 +73,7 @@ export async function loadStoriesFromURL(url, { ignoreSSLErrors = false, failFas
     }
 
     if (warnings.length) {
-      console.log(
+      logger.warn(
         warnings.reduce(
           (acc, i) => dedent`
               ${acc}
@@ -87,10 +89,10 @@ export async function loadStoriesFromURL(url, { ignoreSSLErrors = false, failFas
     }
 
     if (failFastOnErrors) {
-      console.log("Fast fail is enabled. Aborting…");
+      logger.debug("Fast fail is enabled. Aborting…");
       throw new Error("Storybook reported errors.");
     } else {
-      console.log(dedent`
+      logger.warn(dedent`
         This may lead to some stories not working right or getting detected by Zeplin CLI
         We suggest you fix the errors, but we will continue anyway..
         ${separator}
