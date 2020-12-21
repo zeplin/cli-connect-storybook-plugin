@@ -92,7 +92,7 @@ export async function loadStoriesFromURL(url, { ignoreSSLErrors = false, failFas
       logger.debug("Fast fail is enabled. Aborting…");
       throw new Error("Storybook reported errors.");
     } else {
-      logger.debug(dedent`
+      logger.warn(dedent`
         This may lead to some stories not working right or getting detected by Zeplin CLI
         We suggest you fix the errors, but we will continue anyway..
         ${separator}
