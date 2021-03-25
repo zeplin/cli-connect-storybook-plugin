@@ -1,8 +1,0 @@
-test
-coverage
-src/
-.vscode
-.circleci
-
-.eslint*
-tsconfig.json
