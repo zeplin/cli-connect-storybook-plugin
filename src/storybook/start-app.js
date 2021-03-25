@@ -15,8 +15,8 @@ const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
 export async function checkResponse(url) {
   try {
-    await fetch(url, { agent: url.startsWith('https:') ? httpsAgent : undefined });
-    return true;
+    const response = await fetch(url, { agent: url.startsWith('https:') ? httpsAgent : undefined });
+    return response.ok;
   } catch (e) {
     return false;
   }
