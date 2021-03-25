@@ -54,7 +54,7 @@ export async function loadStoriesFromURL(url, { ignoreSSLErrors = false, failFas
   // See https://github.com/hichroma/chromatic/issues/757
   if (errors.length || warnings.length) {
     const logger = getLogger();
-    logger.info('The following problems were reported from your storybook:');
+    logger.info('The following problems were reported from Storybook:');
 
     if (errors.length) {
       logger.error(

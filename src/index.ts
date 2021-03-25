@@ -49,7 +49,7 @@ const checkStorybook = async (url: string, { errorMessage }: { errorMessage: str
             ${errorMessage}
         `);
     }
-    getLogger()?.info(`Detected Storybook at ${url}`);
+    getLogger().info(`Detected Storybook at ${url}`);
 };
 
 const isPathsEqual = (path1: string, path2: string): boolean =>
@@ -101,7 +101,7 @@ export default class implements ConnectPlugin {
         const logger = getLogger();
 
         if (!fetchStories) {
-            logger?.info("Fetching stories from Storybook instance is disabled.");
+            logger.info("Fetching stories from Storybook instance is disabled.");
             return;
         }
 
@@ -130,7 +130,7 @@ export default class implements ConnectPlugin {
         }
 
         if (this.storiesLoaded()) {
-            logger?.info(`Loaded ${this.stories.length} stories from Storybook.`);
+            logger.info(`Loaded ${this.stories.length} stories from Storybook.`);
         }
     }
 

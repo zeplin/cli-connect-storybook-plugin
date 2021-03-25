@@ -42,7 +42,7 @@ async function waitForResponse(child, url) {
       }
 
       if (Date.now() > promptAt) {
-        logger.warn(`No server responding at ${url}, trying again.`);
+        logger.warn(`No server responding at ${url}, waiting for Storybook to start…`);
         promptAt = Date.now() + PROMPT_TIMEOUT;
       }
 
@@ -56,17 +56,19 @@ async function waitForResponse(child, url) {
     check();
 
     if (child) {
-      let output = '';
+      let storybookOutput = '';
       child.stderr.on('data', e => {
-        output += e.toString();
+        logger.debug(`storybook - [sterr] - ${e.toString()}`);
+        storybookOutput += e.toString();
       });
       child.stdout.on('data', o => {
-        output += o.toString();
+        logger.debug(`storybook - [stdout] - ${o.toString()}`);
+        storybookOutput += o.toString();
       });
 
       child.on('close', () => {
         if (!resolved) {
-          reject(new Error(`Script failed to start: ${output}\n`));
+          reject(new Error(`Storybook script to start: ${storybookOutput}\n`));
         }
       });
     }
