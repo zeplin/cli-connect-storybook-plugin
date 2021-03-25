@@ -90,14 +90,30 @@ export async function startApp({ scriptName, commandName, args, url, inheritStdi
     }
 
     // This technique lifted from https://github.com/mysticatea/npm-run-all/blob/52eaf86242ba408dedd015f53ca7ca368f25a026/lib/run-task.js#L156-L174
-    const npmPath = process.env.npm_execpath;
+    const npmPath = process.env.npm_execpath
+      // Replace npx-cli.js with npm-cli.js
+      // hacky but resolves the problem until we can refactor this file
+      // https://github.com/zeplin/cli-connect-storybook-plugin/issues/38
+      .replace("npx-cli.js", "npm-cli.js");
+
     const npmPathIsJs = typeof npmPath === 'string' && /\.m?js/.test(path.extname(npmPath));
+    const isYarn = typeof npmPath === 'string' && /^yarn(\.js)?$/.test(path.basename(npmPath));
     const execPath = npmPathIsJs ? process.execPath : npmPath || 'npm';
+
+    const params = [
+      ...(npmPathIsJs ? [npmPath] : []),
+      'run',
+      scriptName,
+      ...(isYarn ? [] : ["--"]),
+      ...args
+    ];
+
+    getLogger().debug(`Running script: ${execPath} ${params.join(" ")}`);
 
     // Run either:
     //   npm/yarn run scriptName (depending on npm_execpath)
     //   node path/to/npm.js run scriptName (if npm run via node)
-    child = spawn(execPath, [...(npmPathIsJs ? [npmPath] : []), 'run', scriptName, "--", ...args], {
+    child = spawn(execPath, params, {
       env,
       cwd: process.cwd(),
       ...(inheritStdio && { stdio: 'inherit' }),
@@ -106,6 +122,7 @@ export async function startApp({ scriptName, commandName, args, url, inheritStdi
     if (!commandName) {
       throw new Error('You must pass commandName or scriptName');
     }
+    getLogger().debug(`Running command: ${commandName}`);
     child = spawn(commandName, { env, shell: true });
   }
 
