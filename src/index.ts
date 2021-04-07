@@ -124,6 +124,14 @@ export default class implements ConnectPlugin {
 
             try {
                 this.stories = await loadStoriesFromURL(this.sourceUrl, { ignoreSSLErrors, failFastOnErrors });
+            } catch (e) {
+                logger.debug(e.stack);
+                logger.info("Could not load stories from Storybook.");
+
+                if (failFastOnErrors) {
+                    logger.debug("Fast fail is enabled. Aborting…");
+                    throw new Error("Could not load stories from Storybook.");
+                }
             } finally {
                 sbProcess?.kill();
             }
