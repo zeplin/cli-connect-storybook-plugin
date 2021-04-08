@@ -1,6 +1,7 @@
 // Original file: https://github.com/chromaui/chromatic-cli/blob/d2155c2/bin/lib/jsdom-shims.js
 
 import EventSource from 'eventsourcemock';
+import { TextEncoder } from 'util';
 
 // Add canvas mock based on this comment: https://github.com/jsdom/jsdom/issues/1782#issuecomment-337656878
 function mockCanvas(window) {
@@ -332,6 +333,13 @@ export function addShimsToJSDOM(window) {
 
     Object.defineProperty(window, "EventSource", {
         value:  EventSource,
+        writable: false
+    });
+
+
+
+    Object.defineProperty(window, "TextEncoder", {
+        value:  TextEncoder,
         writable: false
     });
 
