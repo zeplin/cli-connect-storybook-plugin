@@ -90,11 +90,12 @@ export async function startApp({ scriptName, commandName, args, url, inheritStdi
     }
 
     // This technique lifted from https://github.com/mysticatea/npm-run-all/blob/52eaf86242ba408dedd015f53ca7ca368f25a026/lib/run-task.js#L156-L174
-    const npmPath = process.env.npm_execpath
+    const npmPath = typeof process.env.npm_execpath === 'string' ?
       // Replace npx-cli.js with npm-cli.js
       // hacky but resolves the problem until we can refactor this file
       // https://github.com/zeplin/cli-connect-storybook-plugin/issues/38
-      .replace("npx-cli.js", "npm-cli.js");
+      process.env.npm_execpath.replace("npx-cli.js", "npm-cli.js")
+      : undefined;
 
     const npmPathIsJs = typeof npmPath === 'string' && /\.m?js/.test(path.extname(npmPath));
     const isYarn = typeof npmPath === 'string' && /^yarn(\.js)?$/.test(path.basename(npmPath));
