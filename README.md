@@ -239,23 +239,6 @@ In case you would need to ignore SSL certificate errors:
 }
 ```
 
-
-### Using Basic Authentication
-
-```jsonc
-{
-    ...
-    "plugins" : [{
-        "name": "@zeplin/cli-connect-storybook-plugin",
-        "config": {
-            "url": "https://<username>:<password>@storybook.example.com"
-        }
-    }],
-    ...
-}
-```
-
-
 ## About Connected Components
 
 [Connected Components](https://blog.zeplin.io/introducing-connected-components-components-in-design-and-code-in-harmony-aa894ed5bd95) in Zeplin lets you access components in your codebase directly on designs in Zeplin, with links to Storybook, GitHub and any other source of documentation based on your workflow. 🧩
