@@ -10,292 +10,77 @@ const STORY_ID = "something-kind--story-hello-there";
 const SELECTED_KIND = "something/kind";
 const SELECTED_STORY = "story/hello*there!";
 
-const EXPECTED_V5_HYPERLINK = "http://localhost:9009/?path=/story/something-kind--story-hello-there";
-const EXPECTED_V5_DOCS_HYPERLINK = "http://localhost:9009/?path=/docs/something-kind--story-hello-there";
-const EXPECTED_V5_HYPERLINK_ONLY_KIND = "http://localhost:9009/?path=/story/something-kind--*";
-const EXPECTED_V4_HYPERLINK_KIND = "http://localhost:9009/?selectedKind=something%2Fkind";
-const EXPECTED_V4_HYPERLINK_KIND_STORY = "http://localhost:9009/?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21";
-
-const EXPECTED_V5_HYPERLINK_PATH = "http://localhost:9009/hello/?path=/story/something-kind--story-hello-there";
-const EXPECTED_V5_DOCS_HYPERLINK_PATH = "http://localhost:9009/hello/?path=/docs/something-kind--story-hello-there";
-const EXPECTED_V4_HYPERLINK_PATH_KIND = "http://localhost:9009/hello/?selectedKind=something%2Fkind";
-const EXPECTED_V4_HYPERLINK_PATH_KIND_STORY = "http://localhost:9009/hello/?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21";
-
-const EXPECTED_V5_IFRAME_HYPERLINK = "http://localhost:9009/iframe.html?path=/story/something-kind--story-hello-there";
-const EXPECTED_V5_IFRAME_DOCS_HYPERLINK = "http://localhost:9009/iframe.html?path=/story/something-kind--story-hello-there";
-const EXPECTED_V5_IFRAME_HYPERLINK_ONLY_KIND = "http://localhost:9009/iframe.html?path=/story/something-kind--*";
-const EXPECTED_V4_IFRAME_HYPERLINK_KIND = "http://localhost:9009/iframe.html?selectedKind=something%2Fkind";
-const EXPECTED_V4_IFRAME_HYPERLINK_KIND_STORY = "http://localhost:9009/iframe.html?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21";
-
 describe("createStoryHyperlink", () => {
-    let baseUrl = BASE_URL;
+    describe.each(
+        [BASE_URL, BASE_URL_WITH_TRAILING_SLASH, BASE_URL_PATH, BASE_URL_PATH_WITH_TRAILING_SLASH, BASE_URL_WITH_IFRAME]
+    )(
+        "with base url %s",
+        (baseUrl: string) => {
+            it("returns Storybook v5+ hyperlink if storyId is provided", () => {
+                const hyperlink = createStoryHyperlink(
+                    baseUrl,
+                    { storyId: STORY_ID, selectedStory: SELECTED_STORY, selectedKind: SELECTED_KIND }
+                );
 
-    it("returns Storybook v5+ hyperlink if storyId is provided", () => {
-        const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID });
-
-        expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK);
-    });
-
-    it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-        const hyperlink = createStoryHyperlink(
-            baseUrl,
-            { storyId: STORY_ID, hasDocsPage: true },
-            { useDocsPage: true }
-        );
-
-        expect(hyperlink).toBe(EXPECTED_V5_DOCS_HYPERLINK);
-    });
-
-    it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy", () => {
-        const hyperlink = createStoryHyperlink(
-            baseUrl,
-            { storyId: STORY_ID, hasDocsPage: true }
-        );
-
-        const hyperlink2 = createStoryHyperlink(
-            baseUrl,
-            { storyId: STORY_ID, hasDocsPage: true },
-            { useDocsPage: false }
-        );
-
-        expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK);
-        expect(hyperlink2).toBe(EXPECTED_V5_HYPERLINK);
-    });
-
-    it("returns Storybook v5+ hyperlink if both selectedKind and selectedStory is provided", () => {
-        const hyperlink = createStoryHyperlink(
-            baseUrl,
-            { selectedKind: SELECTED_KIND, selectedStory: SELECTED_STORY },
-            { format: "new" }
-        );
-
-        expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK);
-    });
-
-    it("returns Storybook v5+ hyperlink if only selectedKind is provided", () => {
-        const hyperlink = createStoryHyperlink(
-            baseUrl,
-            { selectedKind: SELECTED_KIND },
-            { format: "new" }
-        );
-
-        expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK_ONLY_KIND);
-    });
-
-    it("returns Storybook v4 hyperlink if only selectedKind is provided", () => {
-        const hyperlink = createStoryHyperlink(baseUrl, { selectedKind: SELECTED_KIND });
-
-        expect(hyperlink).toBe(EXPECTED_V4_HYPERLINK_KIND);
-    });
-
-    it("returns Storybook v4 hyperlink if both selectedKind and selectedStory is provided", () => {
-        const hyperlink = createStoryHyperlink(baseUrl, {
-            selectedKind: SELECTED_KIND,
-            selectedStory: SELECTED_STORY
-        });
-
-        expect(hyperlink).toBe(EXPECTED_V4_HYPERLINK_KIND_STORY);
-    });
-
-    describe("when baseUrl has trailing slash", () => {
-        beforeAll(() => {
-            baseUrl = BASE_URL_WITH_TRAILING_SLASH;
-        });
-
-        it("returns Storybook v5+ hyperlink if storyId is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID });
-
-            expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK);
-        });
-
-        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-            const hyperlink = createStoryHyperlink(
-                baseUrl,
-                { storyId: STORY_ID, hasDocsPage: true },
-                { useDocsPage: true }
-            );
-
-            expect(hyperlink).toBe(EXPECTED_V5_DOCS_HYPERLINK);
-        });
-
-        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy", () => {
-            const hyperlink = createStoryHyperlink(
-                baseUrl,
-                { storyId: STORY_ID, hasDocsPage: true }
-            );
-
-            const hyperlink2 = createStoryHyperlink(
-                baseUrl,
-                { storyId: STORY_ID, hasDocsPage: true },
-                { useDocsPage: false }
-            );
-
-            expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK);
-            expect(hyperlink2).toBe(EXPECTED_V5_HYPERLINK);
-        });
-
-        it("returns Storybook v4 hyperlink if only selectedKind is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { selectedKind: SELECTED_KIND });
-
-            expect(hyperlink).toBe(EXPECTED_V4_HYPERLINK_KIND);
-        });
-
-        it("returns Storybook v4 hyperlink if both selectedKind and selectedStory is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, {
-                selectedKind: SELECTED_KIND,
-                selectedStory: SELECTED_STORY
+                expect(hyperlink).toMatchSnapshot();
             });
 
-            expect(hyperlink).toBe(EXPECTED_V4_HYPERLINK_KIND_STORY);
-        });
-    });
+            it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
+                const hyperlink = createStoryHyperlink(
+                    baseUrl,
+                    {
+                        storyId: STORY_ID,
+                        selectedKind: SELECTED_KIND,
+                        selectedStory: SELECTED_STORY,
+                        hasDocsPage: true
+                    },
+                    { useDocsPage: true }
+                );
 
-    describe("when baseUrl has path", () => {
-        beforeAll(() => {
-            baseUrl = BASE_URL_PATH;
-        });
-
-        it("returns Storybook v5+ hyperlink if storyId is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID });
-
-            expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK_PATH);
-        });
-
-        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-            const hyperlink = createStoryHyperlink(
-                baseUrl,
-                { storyId: STORY_ID, hasDocsPage: true },
-                { useDocsPage: true }
-            );
-
-            expect(hyperlink).toBe(EXPECTED_V5_DOCS_HYPERLINK_PATH);
-        });
-
-        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy", () => {
-            const hyperlink = createStoryHyperlink(
-                baseUrl,
-                { storyId: STORY_ID, hasDocsPage: true }
-            );
-
-            const hyperlink2 = createStoryHyperlink(
-                baseUrl,
-                { storyId: STORY_ID, hasDocsPage: true },
-                { useDocsPage: false }
-            );
-
-            expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK_PATH);
-            expect(hyperlink2).toBe(EXPECTED_V5_HYPERLINK_PATH);
-        });
-
-        it("returns Storybook v4 hyperlink if only selectedKind is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { selectedKind: SELECTED_KIND });
-
-            expect(hyperlink).toBe(EXPECTED_V4_HYPERLINK_PATH_KIND);
-        });
-
-        it("returns Storybook v4 hyperlink if both selectedKind and selectedStory is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, {
-                selectedKind: SELECTED_KIND,
-                selectedStory: SELECTED_STORY
+                expect(hyperlink).toMatchSnapshot();
             });
 
-            expect(hyperlink).toBe(EXPECTED_V4_HYPERLINK_PATH_KIND_STORY);
-        });
-    });
+            it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy", () => {
+                const hyperlink = createStoryHyperlink(
+                    baseUrl,
+                    {
+                        storyId: STORY_ID,
+                        selectedKind: SELECTED_KIND,
+                        selectedStory: SELECTED_STORY,
+                        hasDocsPage: true
+                    }
+                );
 
-    describe("when baseUrl has path with trailing slash", () => {
-        beforeAll(() => {
-            baseUrl = BASE_URL_PATH_WITH_TRAILING_SLASH;
-        });
+                const hyperlink2 = createStoryHyperlink(
+                    baseUrl,
+                    {
+                        storyId: STORY_ID,
+                        selectedKind: SELECTED_KIND,
+                        selectedStory: SELECTED_STORY,
+                        hasDocsPage: true
+                    },
+                    { useDocsPage: false }
+                );
 
-        it("returns Storybook v5+ hyperlink if storyId is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID });
-
-            expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK_PATH);
-        });
-
-        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-            const hyperlink = createStoryHyperlink(
-                baseUrl,
-                { storyId: STORY_ID, hasDocsPage: true },
-                { useDocsPage: true }
-            );
-
-            expect(hyperlink).toBe(EXPECTED_V5_DOCS_HYPERLINK_PATH);
-        });
-
-        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-            const hyperlink = createStoryHyperlink(
-                baseUrl,
-                { storyId: STORY_ID, hasDocsPage: true }
-            );
-
-            const hyperlink2 = createStoryHyperlink(
-                baseUrl,
-                { storyId: STORY_ID, hasDocsPage: true },
-                { useDocsPage: false }
-            );
-
-            expect(hyperlink).toBe(EXPECTED_V5_HYPERLINK_PATH);
-            expect(hyperlink2).toBe(EXPECTED_V5_HYPERLINK_PATH);
-        });
-
-        it("returns Storybook v4 hyperlink if only selectedKind is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { selectedKind: SELECTED_KIND });
-
-            expect(hyperlink).toBe(EXPECTED_V4_HYPERLINK_PATH_KIND);
-        });
-
-        it("returns Storybook v4 hyperlink if both selectedKind and selectedStory is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, {
-                selectedKind: SELECTED_KIND,
-                selectedStory: SELECTED_STORY
+                expect(hyperlink).toMatchSnapshot();
+                expect(hyperlink2).toMatchSnapshot();
             });
 
-            expect(hyperlink).toBe(EXPECTED_V4_HYPERLINK_PATH_KIND_STORY);
-        });
-    });
+            it("returns Storybook v4 hyperlink if format is old", () => {
+                const hyperlink = createStoryHyperlink(
+                    baseUrl,
+                    {
+                        storyId: STORY_ID,
+                        selectedKind: SELECTED_KIND,
+                        selectedStory: SELECTED_STORY,
+                        hasDocsPage: false
+                    },
+                    {
+                        format: "old"
+                    });
 
-    describe("when baseUrl has iframe.html", () => {
-        beforeAll(() => {
-            baseUrl = BASE_URL_WITH_IFRAME;
-        });
-
-        it("returns Storybook v5+ hyperlink if storyId is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID });
-
-            expect(hyperlink).toBe(EXPECTED_V5_IFRAME_HYPERLINK);
-        });
-
-        it("returns Storybook v5+ docs hyperlink if storyId is provided and has docs page", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { storyId: STORY_ID, hasDocsPage: true });
-
-            expect(hyperlink).toBe(EXPECTED_V5_IFRAME_DOCS_HYPERLINK);
-        });
-
-        it("returns Storybook v5+ hyperlink if only selectedKind is provided", () => {
-            const hyperlink = createStoryHyperlink(
-                baseUrl,
-                { selectedKind: SELECTED_KIND },
-                { format: "new" }
-            );
-
-            expect(hyperlink).toBe(EXPECTED_V5_IFRAME_HYPERLINK_ONLY_KIND);
-        });
-
-        it("returns Storybook v4 hyperlink if only selectedKind is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, { selectedKind: SELECTED_KIND });
-
-            expect(hyperlink).toBe(EXPECTED_V4_IFRAME_HYPERLINK_KIND);
-        });
-
-        it("returns Storybook v4 hyperlink if both selectedKind and selectedStory is provided", () => {
-            const hyperlink = createStoryHyperlink(baseUrl, {
-                selectedKind: SELECTED_KIND,
-                selectedStory: SELECTED_STORY
+                expect(hyperlink).toMatchSnapshot();
             });
-
-            expect(hyperlink).toBe(EXPECTED_V4_IFRAME_HYPERLINK_KIND_STORY);
-        });
-    });
+        }
+    );
 });
