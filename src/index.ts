@@ -8,9 +8,10 @@ import urlJoin from "proper-url-join";
 import updateNotifier from "update-notifier";
 import { loadStoriesFromURL, Story } from "./storybook/stories";
 import { startApp, checkResponse } from "./storybook/start-app";
-import { createStoryHyperlink, StoryHyperlinkParams, StoryHyperlinkOptions } from "./util/create-hyperlink";
+import { createStoryHyperlink } from "./util/create-hyperlink";
 import { name, version } from "../package.json";
 import { getLogger, setLogger } from "./util/logger";
+import { toId } from "@storybook/csf";
 
 const IFRAME_PATH = "iframe.html";
 
@@ -71,6 +72,8 @@ const getComponentNameFromFilePath = (filePath: string): string => {
         .concat(componentName.slice(1))
         .replace(/-([a-z])/, (_, match) => match.toUpperCase());
 };
+
+type StorySummary = Pick<Story, "storyId" | "kind" | "name" | "hasDocsPage">
 
 export default class implements ConnectPlugin {
     stories: Story[] = [];
@@ -142,46 +145,63 @@ export default class implements ConnectPlugin {
         }
     }
 
+    private getStoriesFromStorybook(componentFilePath: string): StorySummary[] {
+        const componentNameFromFilePath = getComponentNameFromFilePath(componentFilePath);
+        return this.stories.filter(story => {
+            const {
+                displayName: storyDisplayName,
+                component,
+                filePath: storyFilePath
+            } = story;
+            return isPathsEqual(componentFilePath, component.filePath) ||
+                isPathsEqual(componentFilePath, storyFilePath) ||
+                component.name === componentNameFromFilePath ||
+                storyDisplayName === componentNameFromFilePath;
+        });
+    }
+
+    private getStoriesFromComponentConfig({
+        kind,
+        stories
+    }: StorybookComponentConfig): StorySummary[] {
+        if (!kind) {
+            return [];
+        }
+        if (!stories) {
+            return this.stories.filter(story => story.kind === kind);
+        }
+        if (this.storiesLoaded()) {
+            return stories.reduce(
+                (acc, storyName) => {
+                    const foundStory = this.stories.find(story => story.kind === kind && story.name === storyName);
+                    if (foundStory) {
+                        acc.push(foundStory);
+                    }
+                    return acc;
+                },
+                [] as StorySummary[]
+            );
+        }
+        return stories.map(storyName => ({
+            storyId: toId(kind, storyName),
+            kind,
+            name: storyName,
+            hasDocsPage: this.useDocsPage || false
+        }));
+    }
+
     process(componentConfig: ComponentConfig): Promise<ComponentData> {
-        const links: Link[] = [];
+        const selectedStories: StorySummary[] = [];
 
         if (this.storiesLoaded()) {
-            this.stories.filter(story => {
-                const {
-                    displayName: storyDisplayName,
-                    component,
-                    filePath: storyFilePath
-                } = story;
-
-                const componentNameFromFilePath = getComponentNameFromFilePath(componentConfig.path);
-
-                return isPathsEqual(componentConfig.path, component.filePath) ||
-                    isPathsEqual(componentConfig.path, storyFilePath) ||
-                    component.name === componentNameFromFilePath ||
-                    storyDisplayName === componentNameFromFilePath;
-            }).forEach(matchedStory => {
-                const { storyId, hasDocsPage } = matchedStory;
-                links.push(this.createLink(
-                    { storyId, hasDocsPage },
-                    { useDocsPage: this.useDocsPage }
-                ));
-            });
+            selectedStories.push(...this.getStoriesFromStorybook(componentConfig.path));
         }
 
-        const { kind: selectedKind, stories } = componentConfig.storybook as StorybookComponentConfig || {};
-        const { format = "old" } = this.config;
+        const storybookConfig = componentConfig.storybook as StorybookComponentConfig || {};
 
-        if (selectedKind) {
-            if (stories && stories.length > 0) {
-                stories.forEach(selectedStory => {
-                    links.push(
-                        this.createLink({ selectedKind, selectedStory }, { format })
-                    );
-                });
-            } else {
-                links.push(this.createLink({ selectedKind }, { format }));
-            }
-        }
+        selectedStories.push(...this.getStoriesFromComponentConfig(storybookConfig));
+
+        const links = selectedStories.map(story => this.createLink(story));
         return Promise.resolve({ links });
     }
 
@@ -193,10 +213,22 @@ export default class implements ConnectPlugin {
         return this.stories.length > 0;
     }
 
-    private createLink(params: StoryHyperlinkParams, options?: StoryHyperlinkOptions): Link {
+    private createLink({ storyId, name: storyName, kind, hasDocsPage }: StorySummary): Link {
         return {
             type: LinkType.storybook,
-            url: createStoryHyperlink(this.targetUrl, params, options)
+            url: createStoryHyperlink(
+                this.targetUrl,
+                {
+                    storyId,
+                    selectedStory: storyName,
+                    selectedKind: kind,
+                    hasDocsPage
+                },
+                {
+                    format: this.config.format,
+                    useDocsPage: this.useDocsPage
+                }
+            )
         };
     }
 }

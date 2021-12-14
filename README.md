@@ -148,7 +148,7 @@ It's also possible to match components with stories manually. Set the `storybook
 
 ### URL format for manual matching
 
-For backwards compatibility, manually defined component stories will generate hyperlinks using old style Storybook URL structure. In order to generate new style hyperlinks (for Storybook v5+) use the following configuration. Next major release will generate new style hyperlinks by default.
+Manually defined component stories will generate hyperlinks using new hyperlinks (for Storybook v5+). In order to generate old style hyperlinks (for Storybook v4) use the following configuration. Next major release will remove to support of old style hyperlinks.
 
 ```jsonc
 {
@@ -158,7 +158,7 @@ For backwards compatibility, manually defined component stories will generate hy
         "config": {
             "url": "http://localhost:6006",
             "startScript": "storybook",
-            "format": "new"
+            "format": "old"
         }
     }],
     ...

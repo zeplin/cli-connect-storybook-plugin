@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createStoryHyperlink with base url http://localhost:9009 returns Storybook v4 hyperlink if format is old 1`] = `"http://localhost:9009/?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009 returns Storybook v5+ docs hyperlink if storyId is provided and has docs page 1`] = `"http://localhost:9009/?path=/docs/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009 returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 1`] = `"http://localhost:9009/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009 returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 2`] = `"http://localhost:9009/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009 returns Storybook v5+ hyperlink if storyId is provided 1`] = `"http://localhost:9009/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/ returns Storybook v4 hyperlink if format is old 1`] = `"http://localhost:9009/?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/ returns Storybook v5+ docs hyperlink if storyId is provided and has docs page 1`] = `"http://localhost:9009/?path=/docs/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/ returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 1`] = `"http://localhost:9009/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/ returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 2`] = `"http://localhost:9009/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/ returns Storybook v5+ hyperlink if storyId is provided 1`] = `"http://localhost:9009/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello returns Storybook v4 hyperlink if format is old 1`] = `"http://localhost:9009/hello/?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello returns Storybook v5+ docs hyperlink if storyId is provided and has docs page 1`] = `"http://localhost:9009/hello/?path=/docs/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 1`] = `"http://localhost:9009/hello/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 2`] = `"http://localhost:9009/hello/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello returns Storybook v5+ hyperlink if storyId is provided 1`] = `"http://localhost:9009/hello/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello/ returns Storybook v4 hyperlink if format is old 1`] = `"http://localhost:9009/hello/?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello/ returns Storybook v5+ docs hyperlink if storyId is provided and has docs page 1`] = `"http://localhost:9009/hello/?path=/docs/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello/ returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 1`] = `"http://localhost:9009/hello/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello/ returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 2`] = `"http://localhost:9009/hello/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/hello/ returns Storybook v5+ hyperlink if storyId is provided 1`] = `"http://localhost:9009/hello/?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/iframe.html returns Storybook v4 hyperlink if format is old 1`] = `"http://localhost:9009/iframe.html?selectedKind=something%2Fkind&selectedStory=story%2Fhello%2Athere%21"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/iframe.html returns Storybook v5+ docs hyperlink if storyId is provided and has docs page 1`] = `"http://localhost:9009/iframe.html?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/iframe.html returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 1`] = `"http://localhost:9009/iframe.html?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/iframe.html returns Storybook v5+ docs hyperlink if storyId is provided and has docs page but useDocsPage is falsy 2`] = `"http://localhost:9009/iframe.html?path=/story/something-kind--story-hello-there"`;
+
+exports[`createStoryHyperlink with base url http://localhost:9009/iframe.html returns Storybook v5+ hyperlink if storyId is provided 1`] = `"http://localhost:9009/iframe.html?path=/story/something-kind--story-hello-there"`;
