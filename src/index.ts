@@ -145,6 +145,14 @@ export default class implements ConnectPlugin {
         }
     }
 
+    get metadata(): Record<string, unknown> {
+        return {
+            storybook: {
+                url: this.targetUrl
+            }
+        };
+    }
+
     private getStoriesFromStorybook(componentFilePath: string): StorySummary[] {
         const componentNameFromFilePath = getComponentNameFromFilePath(componentFilePath);
         return this.stories.filter(story => {
@@ -228,7 +236,13 @@ export default class implements ConnectPlugin {
                     format: this.config.format,
                     useDocsPage: this.useDocsPage
                 }
-            )
+            ),
+            metadata: {
+                storybook: {
+                    kind,
+                    story: storyName
+                }
+            }
         };
     }
 }
