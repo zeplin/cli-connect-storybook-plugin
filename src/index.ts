@@ -199,15 +199,13 @@ export default class implements ConnectPlugin {
     }
 
     process(componentConfig: ComponentConfig): Promise<ComponentData> {
-        const selectedStories: StorySummary[] = [];
-
-        if (this.storiesLoaded()) {
-            selectedStories.push(...this.getStoriesFromStorybook(componentConfig.path));
-        }
-
         const storybookConfig = componentConfig.storybook as StorybookComponentConfig || {};
 
-        selectedStories.push(...this.getStoriesFromComponentConfig(storybookConfig));
+        const selectedStories: StorySummary[] = (
+            storybookConfig.kind
+                ? this.getStoriesFromComponentConfig(storybookConfig)
+                : this.getStoriesFromStorybook(componentConfig.path)
+        );
 
         const links = selectedStories.map(story => this.createLink(story));
         return Promise.resolve({ links });
