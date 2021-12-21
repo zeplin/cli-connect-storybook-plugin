@@ -168,6 +168,15 @@ export default class implements ConnectPlugin {
         });
     }
 
+    private toStory(story: string, kind: string): StorySummary {
+        return {
+            storyId: toId(kind, story),
+            kind,
+            name: story,
+            hasDocsPage: this.useDocsPage || false
+        };
+    }
+
     private getStoriesFromComponentConfig({
         kind,
         stories
@@ -178,24 +187,14 @@ export default class implements ConnectPlugin {
         if (!stories) {
             return this.stories.filter(story => story.kind === kind);
         }
-        if (this.storiesLoaded()) {
-            return stories.reduce(
-                (acc, storyName) => {
-                    const foundStory = this.stories.find(story => story.kind === kind && story.name === storyName);
-                    if (foundStory) {
-                        acc.push(foundStory);
-                    }
-                    return acc;
-                },
-                [] as StorySummary[]
-            );
-        }
-        return stories.map(storyName => ({
-            storyId: toId(kind, storyName),
-            kind,
-            name: storyName,
-            hasDocsPage: this.useDocsPage || false
-        }));
+        return stories.reduce(
+            (acc, storyName) => {
+                const foundStory = this.stories.find(story => story.kind === kind && story.name === storyName);
+                acc.push(foundStory || this.toStory(storyName, kind));
+                return acc;
+            },
+            [] as StorySummary[]
+        );
     }
 
     process(componentConfig: ComponentConfig): Promise<ComponentData> {
