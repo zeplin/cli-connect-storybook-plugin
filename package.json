@@ -63,7 +63,7 @@
     "eventsourcemock": "^2.0.0",
     "https": "^1.0.0",
     "jsdom": "^15.2.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^3.1.1",
     "path": "^0.12.7",
     "proper-url-join": "^2.1.1",
     "ts-dedent": "^2.1.0",
