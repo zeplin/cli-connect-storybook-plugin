@@ -62,7 +62,7 @@
     "cross-spawn": "^7.0.3",
     "eventsourcemock": "^2.0.0",
     "https": "^1.0.0",
-    "jsdom": "^15.2.1",
+    "jsdom": "^16.5.0",
     "node-fetch": "^2.6.0",
     "path": "^0.12.7",
     "proper-url-join": "^2.1.1",
